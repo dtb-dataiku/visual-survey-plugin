@@ -48,9 +48,46 @@
             "mandatory": true
         },
         {
-            "name": "questions-section",
+            "type": "SEPARATOR",
+            "label": "Survey"
+        },
+        {
+            "name": "questions",
+            "type": "OBJECT_LIST",
             "label": "Questions",
-            "type": "SEPARATOR"
+            "subParams": [
+                {
+                    "type": "SEPARATOR",
+                    "label": "Create"
+                },
+                {
+                    "name": "question_type",
+                    "type": "SELECT",
+                    "label": "Question Type",
+                    "selectChoices": [
+                        {"value": "choice", "label": "Choice"},
+                        {"value": "open", "label": "Open"},
+                        {"value": "rank", "label": "Rank"}
+                    ]
+                },
+                {
+                    "name": "question_options",
+                    "type": "OBJECT_LIST",
+                    "label": "Options",
+                    "subParams": [
+                        {
+                            "name": "option",
+                            "type": "STRING",
+                            "label": "Option"
+                        },
+                        {
+                            "name": "Value",
+                            "type": "INT",
+                            "label": "Value"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "roles": []
