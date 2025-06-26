@@ -52,23 +52,27 @@
             "mandatory": true
         },
         {
+            "type": "SEPARATOR",
+            "label": "Columns"
+        },
+        {
             "name": "question_header_column",
             "type": "DATASET_COLUMN",
-            "label": "Name Column",
+            "label": "Name",
             "description": "Select column containing the question short name",
             "datasetParamName": "dataset_name"
         },
         {
             "name": "question_subheader_column",
             "type": "DATASET_COLUMN",
-            "label": "Question Column",
+            "label": "Question",
             "description": "Select column containing the question",
             "datasetParamName": "dataset_name"
         },
         {
             "name": "question_options_column",
             "type": "DATASET_COLUMN",
-            "label": "Options Column",
+            "label": "Options",
             "description": "Select column containing the options for the question",
             "datasetParamName": "dataset_name"
         },
