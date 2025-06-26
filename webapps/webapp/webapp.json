@@ -24,7 +24,7 @@
         {
             "name": "survey_header",
             "type": "STRING",
-            "label": "Survey",
+            "label": "Survey Name",
             "description": "Enter short name for the survey (ex: 'Workshop Survey')",
             "mandatory": true
         },
