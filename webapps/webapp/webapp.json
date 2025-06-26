@@ -22,6 +22,11 @@
     */
     "params": [
         {
+            "name": "setup-section",
+            "label": "Setup",
+            "type": "SEPARATOR"
+        },
+        {
             "name": "survey_header",
             "type": "STRING",
             "label": "Survey Name",
@@ -41,6 +46,11 @@
             "label": "Response Folder",
             "description": "Select a folder to store survey responses",
             "mandatory": true
+        },
+        {
+            "name": "questions-section",
+            "label": "Setup",
+            "type": "SEPARATOR"
         }
     ],
     "roles": []
