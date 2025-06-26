@@ -47,9 +47,16 @@
         {
             "name": "dataset_name",
             "type": "DATASET",
-            "label": "Question Dataset",
+            "label": "Questions Dataset",
             "description": "Select a dataset containing questions for survey",
             "mandatory": true
+        },
+        {
+            "name": "question_header_column",
+            "type": "DATASET_COLUMN",
+            "label": "Question Short Name Column",
+            "description": "Select column containing question short name",
+            "datasetParamName": "dataset_name"
         },
         {
             "type": "SEPARATOR",
