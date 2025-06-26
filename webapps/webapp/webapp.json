@@ -52,14 +52,10 @@
             "mandatory": true
         },
         {
-            "type": "SEPARATOR",
-            "label": "Columns"
-        },
-        {
             "name": "question_header_column",
             "type": "DATASET_COLUMN",
             "label": "Name",
-            "description": "Select column containing the question short name",
+            "description": "Select column containing a short name for the question",
             "datasetParamName": "dataset_name"
         },
         {
