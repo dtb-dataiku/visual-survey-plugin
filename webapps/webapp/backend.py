@@ -15,7 +15,7 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from flask import request
 
-from survey.survey import create_question_card
+from visualsurvey.survey import create_question_card
 
 
 # SETUP
