@@ -23,7 +23,7 @@
     "params": [
         {
             "name": "setup-section",
-            "label": "Setup",
+            "label": "Survey",
             "type": "SEPARATOR"
         },
         {
@@ -41,65 +41,26 @@
             "mandatory": true
         },
         {
+            "type": "SEPARATOR",
+            "label": "Questions"
+        },
+        {
+            "name": "dataset_name",
+            "type": "DATASET",
+            "label": "Question Dataset",
+            "description": "Select a dataset containing questions for survey",
+            "mandatory": true
+        },
+        {
+            "type": "SEPARATOR",
+            "label": "Responses"
+        },
+        {
             "name": "folder_name",
             "type": "MANAGED_FOLDER",
             "label": "Response Folder",
             "description": "Select a folder to store survey responses",
             "mandatory": true
-        },
-        {
-            "type": "SEPARATOR",
-            "label": "Survey"
-        },
-        {
-            "name": "questions",
-            "type": "OBJECT_LIST",
-            "label": "Questions",
-            "subParams": [
-                {
-                    "type": "SEPARATOR",
-                    "label": "Question"
-                },
-                {
-                    "name": "question_type",
-                    "type": "SELECT",
-                    "label": "Question Type",
-                    "selectChoices": [
-                        {"value": "choice", "label": "Choice"},
-                        {"value": "open", "label": "Open"},
-                        {"value": "rank", "label": "Rank"}
-                    ]
-                },
-                {
-                    "name": "question_header",
-                    "type": "STRING",
-                    "label": "Question Name",
-                    "description": ""
-                },
-                {
-                    "name": "question_subheader",
-                    "type": "STRING",
-                    "label": "Question",
-                    "description": ""
-                },
-                {
-                    "name": "question_options",
-                    "type": "OBJECT_LIST",
-                    "label": "Options",
-                    "subParams": [
-                        {
-                            "name": "option",
-                            "type": "STRING",
-                            "label": "Option"
-                        },
-                        {
-                            "name": "Value",
-                            "type": "INT",
-                            "label": "Value"
-                        }
-                    ]
-                }
-            ]
         }
     ],
     "roles": []
