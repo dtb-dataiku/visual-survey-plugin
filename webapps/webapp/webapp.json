@@ -58,7 +58,7 @@
             "subParams": [
                 {
                     "type": "SEPARATOR",
-                    "label": "Create"
+                    "label": "Question"
                 },
                 {
                     "name": "question_type",
@@ -69,6 +69,18 @@
                         {"value": "open", "label": "Open"},
                         {"value": "rank", "label": "Rank"}
                     ]
+                },
+                {
+                    "name": "question_header",
+                    "type": "STRING",
+                    "label": "Question Name",
+                    "description": ""
+                },
+                {
+                    "name": "question_subheader",
+                    "type": "STRING",
+                    "label": "Question",
+                    "description": ""
                 },
                 {
                     "name": "question_options",
