@@ -45,32 +45,32 @@
             "label": "Questions"
         },
         {
-            "name": "dataset_name",
+            "name": "question_dataset",
             "type": "DATASET",
             "label": "Dataset",
             "description": "Select a dataset containing questions for survey",
             "mandatory": true
         },
         {
-            "name": "question_header_column",
+            "name": "header_column",
             "type": "DATASET_COLUMN",
             "label": "Name",
             "description": "Select column containing a short name for the question",
-            "datasetParamName": "dataset_name"
+            "datasetParamName": "question_dataset"
         },
         {
-            "name": "question_subheader_column",
+            "name": "subheader_column",
             "type": "DATASET_COLUMN",
             "label": "Question",
             "description": "Select column containing the question",
-            "datasetParamName": "dataset_name"
+            "datasetParamName": "question_dataset"
         },
         {
-            "name": "question_options_column",
+            "name": "options_column",
             "type": "DATASET_COLUMN",
             "label": "Options",
             "description": "Select column containing the options for the question",
-            "datasetParamName": "dataset_name"
+            "datasetParamName": "question_dataset"
         },
         {
             "type": "SEPARATOR",

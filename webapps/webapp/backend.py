@@ -18,6 +18,15 @@ from flask import request
 from visualsurvey.survey import create_question_card
 
 
+# PLUGIN
+# Get parameters
+webapp_config = get_webapp_config()
+survey_header = webapp_config['survey_header']
+survey_header = webapp_config['survey_subheader']
+dataset_name = webapp_config['dataset_name']
+dataset_name = webapp_config['dataset_name']
+
+
 # SETUP
 # Define survey metadata
 SURVEY_HEADER = 'Survey'
