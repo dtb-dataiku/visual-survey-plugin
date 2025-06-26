@@ -30,14 +30,14 @@
             "name": "survey_header",
             "type": "STRING",
             "label": "Survey Name",
-            "description": "Enter short name for the survey (ex: 'Workshop Survey')",
+            "description": "Enter short name for the survey",
             "mandatory": true
         },
         {
             "name": "survey_subheader",
             "type": "STRING",
             "label": "Survey Description",
-            "description": "Enter short description for the survey (ex: 'Please complete this quick survey to help us improve.')",
+            "description": "Enter short description for the survey",
             "mandatory": true
         },
         {
