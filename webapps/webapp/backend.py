@@ -24,7 +24,12 @@ webapp_config = get_webapp_config()
 survey_header = webapp_config['survey_header']
 survey_header = webapp_config['survey_subheader']
 dataset_name = webapp_config['dataset_name']
-dataset_name = webapp_config['dataset_name']
+type_column = webapp_config['type_column']
+header_column = webapp_config['header_column']
+subheader_column = webapp_config['subheader_column']
+options_column = webapp_config['options_column']
+
+
 
 
 # SETUP

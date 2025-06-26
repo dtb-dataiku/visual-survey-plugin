@@ -52,6 +52,13 @@
             "mandatory": true
         },
         {
+            "name": "type_column",
+            "type": "DATASET_COLUMN",
+            "label": "Type",
+            "description": "Select column containing the type of question",
+            "datasetParamName": "question_dataset"
+        },
+        {
             "name": "header_column",
             "type": "DATASET_COLUMN",
             "label": "Name",
