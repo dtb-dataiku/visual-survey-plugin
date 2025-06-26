@@ -49,7 +49,7 @@
         },
         {
             "name": "questions-section",
-            "label": "Setup",
+            "label": "Questions",
             "type": "SEPARATOR"
         }
     ],
