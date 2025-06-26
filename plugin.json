@@ -5,7 +5,7 @@
         "label": "Visual survey",
         "description": "Create a survey webapp",
         "author": "darin.brown@dataiku.com",
-        "icon": "fas fa-puzzle-piece",
+        "icon": "fas fa-poll",
         "tags": [], //for example: ["Machine Learning", "NLP"]
         "url": "",
         "licenseInfo": "Apache Software License",
