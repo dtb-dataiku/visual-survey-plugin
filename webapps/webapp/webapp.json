@@ -22,33 +22,25 @@
     */
     "params": [
         {
-            "name": "input_dataset",
-            "type": "DATASET",
-            "label": "Dataset",
-            "description": "",
-            "mandatory": true
-        },
-        {
-            "name": "input_column",
-            "type": "DATASET_COLUMN",
-            "datasetParamName": "input_dataset",
-            "label": "Column",
-            "description": "",
-            "mandatory": true
-        },
-        {
-            "name": "input_int",
-            "type": "INT",
-            "label": "Int",
-            "description": "",
-            "mandatory": true
-        },
-        {
-            "name": "input_string",
+            "name": "survey_header",
             "type": "STRING",
-            "label": "String",
-            "description": "",
-            "mandatory": false
+            "label": "Survey",
+            "description": "Enter short name for the survey (ex: 'Workshop Survey')",
+            "mandatory": true
+        },
+        {
+            "name": "survey_subheader",
+            "type": "STRING",
+            "label": "Survey Description",
+            "description": "Enter short description for the survey (ex: 'Please complete this quick survey to help us improve.')",
+            "mandatory": true
+        },
+        {
+            "name": "folder_name",
+            "type": "MANAGED_FOLDER",
+            "label": "Response Folder",
+            "description": "Select a folder to store survey responses",
+            "mandatory": true
         }
     ],
     "roles": []
