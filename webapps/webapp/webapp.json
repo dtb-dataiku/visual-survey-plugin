@@ -60,7 +60,7 @@
             "mandatory": true
         },
         {
-            "name": "header_column",
+            "name": "name_column",
             "type": "DATASET_COLUMN",
             "label": "Name",
             "description": "Select column containing a short name for the questions",
@@ -68,7 +68,7 @@
             "mandatory": true
         },
         {
-            "name": "subheader_column",
+            "name": "question_column",
             "type": "DATASET_COLUMN",
             "label": "Question",
             "description": "Select column containing the question",
