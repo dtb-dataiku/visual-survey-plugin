@@ -163,10 +163,13 @@ def submit_survey(n_clicks, *responses):
     client = dataiku.api_client()
     headers = dict(request.headers)
     auth_info_browser = client.get_auth_info_from_browser_headers(headers)
-    user = auth_info_browser['authIdentifier']
     
+    user = auth_info_browser['authIdentifier']
     if anonymous:
-        pass
+        if '@' in user:
+            user = '@'.join([f.bothify('#' * 16), email.split('@')[1]])
+        else:
+            user = '@'.join([f.bothify('#' * 16), 'hidden.com'])
     
     # Build dataframe of responses
     print('--> Callback submit-survey: Build dataframe of responses')
