@@ -119,7 +119,7 @@ def register_callbacks_for_rank_question(cid):
         prevent_initial_call=True
     )
     def _callback(active_cell, current_data, _cid=cid):
-        print(f'Callback for {_cid}')
+        print(f'--> Callback for {_cid}')
         if not active_cell or not current_data:
             return dash.no_update
         
@@ -154,16 +154,19 @@ states = [
     prevent_initial_call=True
 )
 def submit_survey(n_clicks, *responses):
+    print(f'--> Callback for submit-survey')
     if not n_clicks:
         return dash.no_update
     
     # Get user
+    print('--> Callback submit-survey: Get user')
     client = dataiku.api_client()
     headers = dict(request.headers)
     auth_info_browser = client.get_auth_info_from_browser_headers(headers)
     user = auth_info_browser['authIdentifier']
     
     # Build dataframe of responses
+    print('--> Callback submit-survey: Build dataframe of responses')
     now = datetime.datetime.now()
     response_data = []
     for r, response in enumerate(responses):
@@ -221,12 +224,14 @@ def submit_survey(n_clicks, *responses):
     response_df = pd.DataFrame(response_data)
     
     # Save responses
+    print('--> Callback submit-survey: Save responses')
     user_str = '_at_'.join(user.split("@")).replace(".", "_")
     filename = "-".join(["response", user_str, now.strftime("%Y%m%d-%H%M%S")]) + ".csv"
     csv = response_df.to_csv(index=False).encode("utf-8")
     folder.upload_data(filename, csv)
         
     # Build confirmation message
+    print('--> Callback submit-survey: Build confirmation message')
     cols = ['question_id', 'name', 'question']
     display_df = (
         response_df
