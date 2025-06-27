@@ -53,8 +53,8 @@ questions = []
 for i, row in questions_df.iterrows():
     questions.append({
         'type': row[type_col],
-        'name': row[header_col],
-        'question': row[subheader_col],
+        'name': row[name_col],
+        'question': row[question_col],
         'options': row[options_col].split(OPTIONS_DELIMITER) if row[type_col] != 'open' else None,
         'default': row[default_col] if row[type_col] == 'choice' else None,
         'display': row[display_col] if row[type_col] == 'rank' and row[display_col] else None
