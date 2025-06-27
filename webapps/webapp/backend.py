@@ -35,7 +35,8 @@ anonymous = webapp_config['anonymous']
 
 # SETUP
 # Set delimiter
-DELIMITER = '|'
+OPTIONS_DELIMITER = '|'
+VALUES_DELIMITER = '#'
 
 # Map question type to dash component element
 ELEMENT_MAP = {
@@ -57,7 +58,7 @@ for i, row in questions_df.iterrows():
         'type': row[type_col],
         'name': row[header_col],
         'question': row[subheader_col],
-        'options': row[options_col].split(DELIMITER) if row[type_col] != 'open' else None,
+        'options': row[options_col].split(OPTIONS_DELIMITER) if row[type_col] != 'open' else None,
         'default': row[default_col] if row[type_col] == 'choice' else None,
         'display': row[display_col] if row[type_col] == 'rank' and row[display_col] else None
     })
@@ -225,19 +226,21 @@ def submit_survey(n_clicks, *responses):
                     'timestamp': now
                 })
         elif question['type'] == 'choice':
-            option = (
-                question['options_df']
-                .loc[question['options_df']['value'] == response, 'label']
-                .iloc[0]
-            )
+            options = question['options']
+            
+            if all(list(map(lambda o: DELIMITER in o, options))):
+                values = [o.split(DELIMITER)[1] for o in options]
+                options = [o.split(DELIMITER)[0] for o in options]
+            else:
+                values = [i for i in range(1, len(options) + 1)]
             
             response_data.append({
                 'question_id': r,
-                'question_type': question['question_type'],
-                'question_header': question['header'],
-                'question_subheader': question['subheader'],
-                'question_option': option,
-                'question_value': response,
+                'type': question['type'],
+                'name': question['name'],
+                'question': question['question'],
+                'option': ,
+                'value': response,
                 'user': user,
                 'timestamp': now
             })

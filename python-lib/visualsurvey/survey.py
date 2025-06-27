@@ -4,11 +4,13 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 
 
+# Set delimiter
+OPTIONS_DELIMITER = '|'
+VALUES_DELIMITER = '#'
+
+
 # Create a dash component for ranking question
 def create_question_card(card_id, **params):
-    # Set delimiter
-    DELIMITER = '#'
-    
     # Build a dash card for based on question parameters
     qtype = params.get('type', None)
     name = params.get('name', 'Question Name')
@@ -21,9 +23,9 @@ def create_question_card(card_id, **params):
         
         if options:
             # Parse list of options
-            if all(list(map(lambda o: DELIMITER in o, options))):
-                values = [o.split(DELIMITER)[1] for o in options]
-                options = [o.split(DELIMITER)[0] for o in options]
+            if all(list(map(lambda o: VALUES_DELIMITER in o, options))):
+                values = [o.split(VALUES_DELIMITER)[1] for o in options]
+                options = [o.split(VALUES_DELIMITER)[0] for o in options]
             else:
                 values = [i for i in range(1, len(options) + 1)]
             
