@@ -59,7 +59,7 @@ for i, row in questions_df.iterrows():
         'question': row[subheader_col],
         'options': row[options_col].split(DELIMITER) if row[type_col] != 'open' else None,
         'default': row[default_col] if row[type_col] == 'choice' else None,
-        'display': row[display_col] if (row[type_col] == 'rank') & (row[display_col]) else None
+        'display': row[display_col] if row[type_col] == 'rank' and row[display_col] else None
     })
 
 # Get folder responses
