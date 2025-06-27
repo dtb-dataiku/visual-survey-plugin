@@ -21,6 +21,7 @@ from visualsurvey.survey import OPTIONS_DELIMITER, VALUES_DELIMITER
 
 # PLUGIN
 # Get parameters
+print("--> Get parameters")
 webapp_config = get_webapp_config()
 survey_header = webapp_config['survey_header']
 survey_subheader = webapp_config['survey_subheader']
@@ -36,6 +37,7 @@ anonymous = webapp_config['anonymous']
 
 # SETUP
 # Map question type to dash component element
+print("--> Map question type to dash component element")
 ELEMENT_MAP = {
     'choice': 'value',
     'open': 'value',
@@ -43,12 +45,14 @@ ELEMENT_MAP = {
 }
 
 # Load questions
+print("--> Load questions")
 questions_cols = [type_col, name_col, question_col, options_col, default_col, display_col]
 questions_ds = dataiku.Dataset(question_ds_name)
 questions_df = questions_ds.get_dataframe(columns=questions_cols)
 questions_df = questions_df.loc[questions_df[type_col] in ELEMENT_MAP.keys(), ]
 
 # Build list of question card parameters
+print("--> Build list of question card parameters")
 questions = []
 for i, row in questions_df.iterrows():
     questions.append({
@@ -61,11 +65,13 @@ for i, row in questions_df.iterrows():
     })
 
 # Build question cards
+print("--> Build question cards")
 question_cards = []
 for q, question in enumerate(questions):
     question_cards.append(create_question_card(f'question-card-{q}', **question))
     
 # Get folder responses
+print("--> Get folder responses")
 folder = dataiku.Folder(folder_name)
 
 
