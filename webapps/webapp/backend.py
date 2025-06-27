@@ -60,58 +60,15 @@ for i, row in questions_df.iterrows():
         'display': row[display_col] if row[type_col] == 'rank' and row[display_col] else None
     })
 
-# Get folder responses
-folder = dataiku.Folder(folder_name)
-
-
-
-
-
-
-# Input data
-RANK_OPTIONS = [{'option': f'Option {i+1}'} for i in range(3)]
-rank_df = pd.DataFrame(RANK_OPTIONS)
-rank_df['up'] = '🔼'
-rank_df['down'] = '🔽'
-
-OPTIONS = [{'label': f'Label {i+1}', 'value': i + 1} for i in range(5)]
-options_df = pd.DataFrame(OPTIONS)
-
-
 # Build question cards
-questions = [
-    {
-        'question_type': 'ranking',
-        'header': 'Question 1',
-        'subheader': 'Rank these.',
-        'name': 'Option',
-        'options_df': rank_df
-    },
-    {
-        'question_type': 'choice',
-        'header': 'Question 2',
-        'subheader': 'Which one do you need?',
-        'options_df': options_df,
-        'value': 1
-    },
-    {
-        'question_type': 'choice',
-        'header': 'Question 3',
-        'subheader': 'Which one do you want?',
-        'options_df': options_df,
-        'value': 1
-    },
-    {
-        'question_type': 'open',
-        'header': 'Question 4',
-        'subheader': 'Do you have any thoughts?'
-    }
-]
-
 question_cards = []
 for q, question in enumerate(questions):
     question_cards.append(create_question_card(f'question-card-{q}', **question))
     
+# Get folder responses
+folder = dataiku.Folder(folder_name)
+
+
 # APP
 # Set stylesheet
 app.config.external_stylesheets = [dbc.themes.BOOTSTRAP]
