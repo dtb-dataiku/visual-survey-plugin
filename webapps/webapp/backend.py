@@ -119,6 +119,7 @@ def register_callbacks_for_rank_question(cid):
         prevent_initial_call=True
     )
     def _callback(active_cell, current_data, _cid=cid):
+        print(f'Callback for {_cid}')
         if not active_cell or not current_data:
             return dash.no_update
         
