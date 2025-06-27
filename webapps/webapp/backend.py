@@ -207,24 +207,24 @@ def submit_survey(n_clicks, *responses):
     for r, response in enumerate(responses):
         question = questions[r]
         if question['type'] == 'rank':
-            name = question['display'].lower()
+            display = question['display'].lower()
             df = pd.DataFrame({
-                'option': [item[name] for item in response],
+                'option': [item[display] for item in response],
                 'order': range(1, len(response) + 1)
             })
             
             for _, row in df.iterrows():
                 response_data.append({
                     'question_id': r,
-                    'question_type': question['question_type'],
-                    'question_header': question['header'],
-                    'question_subheader': question['subheader'],
-                    'question_option': row['option'],
-                    'question_value': row['order'],
+                    'type': question['type'],
+                    'name': question['name'],
+                    'question': question['question'],
+                    'option': row['option'],
+                    'value': row['order'],
                     'user': user,
                     'timestamp': now
                 })
-        elif question['question_type'] == 'choice':
+        elif question['type'] == 'choice':
             option = (
                 question['options_df']
                 .loc[question['options_df']['value'] == response, 'label']
