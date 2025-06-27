@@ -16,6 +16,7 @@ import dash_bootstrap_components as dbc
 from flask import request
 
 from visualsurvey.survey import create_question_card
+from visualsurvey.survey import OPTIONS_DELIMITER, VALUES_DELIMITER
 
 
 # PLUGIN
@@ -34,10 +35,6 @@ folder_name = webapp_config['folder_name']
 anonymous = webapp_config['anonymous']
 
 # SETUP
-# Set delimiter
-OPTIONS_DELIMITER = '|'
-VALUES_DELIMITER = '#'
-
 # Map question type to dash component element
 ELEMENT_MAP = {
     'choice': 'value',
