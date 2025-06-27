@@ -49,7 +49,7 @@ print("--> Load questions")
 questions_cols = [type_col, name_col, question_col, options_col, default_col, display_col]
 questions_ds = dataiku.Dataset(question_ds_name)
 questions_df = questions_ds.get_dataframe(columns=questions_cols)
-questions_df = questions_df.loc[questions_df[type_col] in ELEMENT_MAP.keys(), ]
+questions_df = questions_df.loc[questions_df[type_col] in list(ELEMENT_MAP.keys()), ]
 
 # Build list of question card parameters
 print("--> Build list of question card parameters")
