@@ -13,6 +13,9 @@ import pandas as pd
 
 # Create a dash component for ranking question
 def create_question_card(card_id, **params):
+    # Set delimiter
+    DELIMITER = '#'
+    
     # Build a dash card for based on question parameters
     qtype = params.get('type', None)
     name = params.get('name', 'Question Name')
@@ -23,12 +26,23 @@ def create_question_card(card_id, **params):
         options = params.get('options', None)
         if options:
             # Parse list of options
+            if all(list(map(lambda o: DELIMITER in o, options))):
+                values = [o.split(DELIMITER)[1] for o in options]
+                options = [o.split(DELIMITER)[0] for o in options]
+            else:
+                values = [i for i in range(1, len(options) + 1)]
             
-            default = params.get('default', options[0])
+            # Get default option
+            default = params.get('default', None)
+            if default & (default in options):
+                default = values[options.index(default)]
+            else:
+                default = values[0]
+                
+            # Create dataframe of options
+            options_df = pd.DataFrame({'label': options, 'value': values})
 
-            options_df = params.get('options_df', pd.DataFrame({'label': ['Option'], 'value': [1]}))
-            value = params.get('value', options_df.value.min())
-
+            # Build card
             card = dbc.Card(
                 dbc.CardBody(
                     [
@@ -37,7 +51,7 @@ def create_question_card(card_id, **params):
                         dbc.RadioItems(
                             id=card_id,
                             options=options_df.to_dict('records'),
-                            value=value,
+                            value=default,
                             labelClassName='mr-3',
                             inputClassName='mr-1'
                         )
@@ -45,57 +59,60 @@ def create_question_card(card_id, **params):
                 ),
                 className='mb-4'
             )
-    elif question_type == 'open':
-        header = params.get('header', 'Header')
-        subheader = params.get('subheader', 'Subheader')
-        
+    elif qtype == 'open':
+        # Build card
         card = dbc.Card(
             dbc.CardBody(
                 [
-                    html.H4(header, className='card-title'),
-                    html.P(subheader, className='card-text'),
+                    html.H4(name, className='card-title'),
+                    html.P(question, className='card-text'),
                     dbc.Textarea(
                         id=card_id,
                         placeholder='Enter your response here...',
-                        style={'height': '100px', 'width': 'auto'}
+                        style={'height': '100px', 'width': '400px'}
                     )
                 ]
             ),
             className='mb-4'
         )
-    elif question_type == 'rank':
-        header = params.get('header', 'Header')
-        subheader = params.get('subheader', 'Subheader')
-        name = params.get('name', 'Name')
-        options_df = params.get('options_df', pd.DataFrame({name: ['Option']}))
+    elif qtype == 'rank':
+        options = params.get('options', None)
+        display = params.get('display', 'Item')
+        if options:                
+            # Create dataframe of options
+            options_df = pd.DataFrame({display.lower(): options})
+            options_df['up'] = '🔼'
+            options_df['down'] = '🔽'
+            
+            # Build list of columns
+            cols = [
+                {'name': display, 'id': display.lower(), 'type': 'text'},
+                {'name': 'Move Up', 'id': 'up', 'type': 'text'},
+                {'name': 'Move Down', 'id': 'down', 'type': 'text'}
+            ]
         
-        card = dbc.Card(
-            dbc.CardBody(
-                [
-                    html.H4(header, className='card-title'),
-                    html.P(subheader, className='card-text'),
-                    dash_table.DataTable(
-                        id=card_id,
-                        columns=[
-                            {'name': name, 'id': name.lower(), 'type': 'text'},
-                            {'name': 'Move Up', 'id': 'up', 'type': 'text'},
-                            {'name': 'Move Down', 'id': 'down', 'type': 'text'}
-                        ],
-                        data=options_df.to_dict('records'),
-                        style_cell={'textAlign': 'left', 'padding': '10px', 'fontFamily': 'sans-serif'},
-                        style_header={
-                            'backgroundColor': 'rgb(230, 230, 230)',
-                            'fontWeight': 'bold'
-                        },
-                        style_cell_conditional=[
-                            {'if': {'column_id': 'up'}, 'textAlign': 'center', 'cursor': 'pointer', 'width': '120px'},
-                            {'if': {'column_id': 'down'}, 'textAlign': 'center', 'cursor': 'pointer', 'width': '120px'}
-                        ]
-                    )
-                ]
-            ),
-            className='mb-4'
-        )
-
+            card = dbc.Card(
+                dbc.CardBody(
+                    [
+                        html.H4(name, className='card-title'),
+                        html.P(question, className='card-text'),
+                        dash_table.DataTable(
+                            id=card_id,
+                            columns=cols,
+                            data=options_df.to_dict('records'),
+                            style_cell={'textAlign': 'left', 'padding': '10px', 'fontFamily': 'sans-serif'},
+                            style_header={
+                                'backgroundColor': 'rgb(230, 230, 230)',
+                                'fontWeight': 'bold'
+                            },
+                            style_cell_conditional=[
+                                {'if': {'column_id': 'up'}, 'textAlign': 'center', 'cursor': 'pointer', 'width': '120px'},
+                                {'if': {'column_id': 'down'}, 'textAlign': 'center', 'cursor': 'pointer', 'width': '120px'}
+                            ]
+                        )
+                    ]
+                ),
+                className='mb-4'
+            )
 
     return card
