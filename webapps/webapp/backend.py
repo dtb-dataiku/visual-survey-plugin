@@ -217,26 +217,27 @@ def submit_survey(n_clicks, *responses):
                     'type': question['type'],
                     'name': question['name'],
                     'question': question['question'],
-                    'option': row['option'],
+                    'response': row['option'],
                     'value': row['order'],
                     'user': user,
                     'timestamp': now
                 })
         elif question['type'] == 'choice':
             options = question['options']
-            
-            if all(list(map(lambda o: DELIMITER in o, options))):
-                values = [o.split(DELIMITER)[1] for o in options]
-                options = [o.split(DELIMITER)[0] for o in options]
+            if all(list(map(lambda o: VALUES_DELIMITER in o, options))):
+                values = [o.split(VALUES_DELIMITER)[1] for o in options]
+                options = [o.split(VALUES_DELIMITER)[0] for o in options]
             else:
                 values = [i for i in range(1, len(options) + 1)]
+            
+            mapping = dict(zip(values, options))
             
             response_data.append({
                 'question_id': r,
                 'type': question['type'],
                 'name': question['name'],
                 'question': question['question'],
-                'option': ,
+                'response': mapping.get(response),
                 'value': response,
                 'user': user,
                 'timestamp': now
@@ -244,11 +245,11 @@ def submit_survey(n_clicks, *responses):
         elif question['question_type'] == 'open':
             response_data.append({
                 'question_id': r,
-                'question_type': question['question_type'],
-                'question_header': question['header'],
-                'question_subheader': question['subheader'],
-                'question_option': response if response else 'No response provided.',
-                'question_value': len(response) if response else 0,
+                'type': question['type'],
+                'name': question['name'],
+                'question': question['question'],
+                'response': response if response else 'No response provided.',
+                'value': len(response) if response else 0,
                 'user': user,
                 'timestamp': now
             })
