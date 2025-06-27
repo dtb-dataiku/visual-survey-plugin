@@ -46,7 +46,7 @@ ELEMENT_MAP = {
 }
 
 # Load questions
-questions_cols = [type_col, header_col, subheader_col, options_col, default_col]
+questions_cols = [type_col, header_col, subheader_col, options_col, default_col, display_col]
 questions_ds = dataiku.Dataset(dataset_name)
 questions_df = questions_ds.get_dataframe(columns=questions_cols)
 questions_df = questions_df.loc[questions_df[type_col] in ELEMENT_MAP.keys(), ]
