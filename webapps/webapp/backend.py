@@ -165,6 +165,9 @@ def submit_survey(n_clicks, *responses):
     auth_info_browser = client.get_auth_info_from_browser_headers(headers)
     user = auth_info_browser['authIdentifier']
     
+    if anonymous:
+        pass
+    
     # Build dataframe of responses
     print('--> Callback submit-survey: Build dataframe of responses')
     now = datetime.datetime.now()
