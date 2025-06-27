@@ -205,7 +205,7 @@ def submit_survey(n_clicks, *responses):
                 'user': user,
                 'timestamp': now
             })
-        elif question['question_type'] == 'open':
+        elif question['type'] == 'open':
             response_data.append({
                 'question_id': r,
                 'type': question['type'],
