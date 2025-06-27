@@ -86,8 +86,16 @@
         {
             "name": "default_option_column",
             "type": "DATASET_COLUMN",
-            "label": "Default Options",
+            "label": "Default Option",
             "description": "Select column containing the default option for the questions",
+            "datasetParamName": "question_dataset",
+            "mandatory": true
+        },
+        {
+            "name": "display_column",
+            "type": "DATASET_COLUMN",
+            "label": "Display Name",
+            "description": "Select column containing display name for rank options",
             "datasetParamName": "question_dataset",
             "mandatory": true
         },

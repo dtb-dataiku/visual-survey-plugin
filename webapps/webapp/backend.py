@@ -29,6 +29,7 @@ header_col = webapp_config['header_column']
 subheader_col = webapp_config['subheader_column']
 options_col = webapp_config['options_column']
 default_col = webapp_config['default_option_column']
+display_col = webapp_config['display_column']
 folder_name = webapp_config['folder_name']
 anonymous = webapp_config['anonymous']
 
@@ -107,7 +108,7 @@ app.layout = html.Div([
 
 # CALLBACKS
 # Handle ranking question
-def register_callbacks_for_ranking_question(cid):
+def register_callbacks_for_rank_question(cid):
     @app.callback(
         Output(cid, 'data'),
         Input(cid, 'active_cell'),
@@ -133,12 +134,12 @@ def register_callbacks_for_ranking_question(cid):
         return df.to_dict('records')
     
 for q, question in enumerate(questions):
-    if question['question_type'] == 'ranking':
-        register_callbacks_for_ranking_question(f'question-card-{q}')
+    if question['type'] == 'rank':
+        register_callbacks_for_rank_question(f'question-card-{q}')
 
 # Handle submit button
 states = [
-    State(f'question-card-{q}', ELEMENT_MAP[question['question_type']])
+    State(f'question-card-{q}', ELEMENT_MAP[question['type']])
     for q, question in enumerate(questions)
 ]
 
@@ -163,8 +164,8 @@ def submit_survey(n_clicks, *responses):
     response_data = []
     for r, response in enumerate(responses):
         question = questions[r]
-        if question['question_type'] == 'ranking':
-            name = question['name'].lower()
+        if question['type'] == 'rank':
+            name = question['display'].lower()
             df = pd.DataFrame({
                 'option': [item[name] for item in response],
                 'order': range(1, len(response) + 1)
