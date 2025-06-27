@@ -74,6 +74,9 @@ for q, question in enumerate(questions):
 print("--> Get folder responses")
 folder = dataiku.Folder(folder_name)
 
+# Get faker object
+f = Faker('en_US')
+
 
 # APP
 # Set stylesheet
