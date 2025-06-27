@@ -53,14 +53,14 @@ questions_df = questions_df.loc[questions_df[type_col] in ELEMENT_MAP.keys(), ]
 
 # Build list of question card parameters
 questions = []
-for i, row in questions_df.iterrows():
+for i, row in questions_df.iterrows():    
     questions.append({
         'type': row[type_col],
         'name': row[header_col],
         'question': row[subheader_col],
         'options': row[options_col].split(DELIMITER) if row[type_col] != 'open' else None,
         'default': row[default_col],
-        'display': 'Item' if row[type_col] == 'rank' else None
+        'display': row[display_col] if row[type_col] == 'rank' else None
     })
 
 # Build question cards
