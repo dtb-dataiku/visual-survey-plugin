@@ -22,31 +22,51 @@ from visualsurvey.survey import create_question_card
 # Get parameters
 webapp_config = get_webapp_config()
 survey_header = webapp_config['survey_header']
-survey_header = webapp_config['survey_subheader']
+survey_subheader = webapp_config['survey_subheader']
 dataset_name = webapp_config['dataset_name']
-type_column = webapp_config['type_column']
-header_column = webapp_config['header_column']
-subheader_column = webapp_config['subheader_column']
-options_column = webapp_config['options_column']
-
-
-
+type_col = webapp_config['type_column']
+header_col = webapp_config['header_column']
+subheader_col = webapp_config['subheader_column']
+options_col = webapp_config['options_column']
+folder_name = webapp_config['folder_name']
+anonymous = webapp_config['anonymous']
 
 # SETUP
-# Define survey metadata
-SURVEY_HEADER = 'Survey'
-SURVEY_SUBHEADER = 'Answer the questions'
+# Set delimiter
+DELIMITER = '|'
 
-# Get folder for survey responses
-FOLDER_NAME = 'responses'
-folder = dataiku.Folder(FOLDER_NAME)
-
-# Define map from question type to dash component element
+# Map question type to dash component element
 ELEMENT_MAP = {
-    'ranking': 'data',
     'choice': 'value',
-    'open': 'value'
+    'open': 'value',
+    'rank': 'data'
 }
+
+# Load questions
+questions_cols = [type_col, header_col, subheader_col, options_col]
+questions_ds = dataiku.Dataset(dataset_name)
+questions_df = questions_ds.get_dataframe(columns=questions_cols)
+questions_df = questions_df.loc[questions_df[type_col] in ELEMENT_MAP.keys(), ]
+
+# Build list of question card parameters
+questions = []
+for i, row in questions_df.iterrows():
+    questions.append({
+        'type': row[type_col],
+        'header': row[header_col],
+        'subheader': row[subheader_col],
+        'name': 'Item' if row[type_col] == 'rank' else None,
+        'options': row[options_col].split(DELIMITER)
+    })
+
+
+# Get folder responses
+folder = dataiku.Folder(folder_name)
+
+
+
+
+
 
 # Input data
 RANK_OPTIONS = [{'option': f'Option {i+1}'} for i in range(3)]
@@ -103,8 +123,8 @@ app.layout = html.Div([
             # Header
             dbc.Row(dbc.Col(html.Div(
                 [
-                    html.H1(SURVEY_HEADER, className='text-center text-primary mb-4'),
-                    html.P(SURVEY_SUBHEADER, className='text-center')
+                    html.H1(survey_header, className='text-center text-primary mb-4'),
+                    html.P(survey_subheader, className='text-center')
                 ],
                 className='py-4'
             ))),
