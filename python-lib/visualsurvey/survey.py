@@ -4,34 +4,47 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 
 
+# 'type'
+# 'name'
+# 'question'
+# 'options'
+# 'default'
+# 'display'
+
 # Create a dash component for ranking question
 def create_question_card(card_id, **params):
+    # Build a dash card for based on question parameters
+    qtype = params.get('type', None)
+    name = params.get('name', 'Question Name')
+    question = params.get('question', 'Question')
+    
     card = None
-    
-    question_type = params.get('type', None)
-    
-    if question_type == 'choice':
-        header = params.get('header', 'Header')
-        subheader = params.get('subheader', 'Subheader')
-        options_df = params.get('options_df', pd.DataFrame({'label': ['Option'], 'value': [1]}))
-        value = params.get('value', options_df.value.min())
-        
-        card = dbc.Card(
-            dbc.CardBody(
-                [
-                    html.H4(header, className='card-title'),
-                    html.P(subheader, className='card-text'),
-                    dbc.RadioItems(
-                        id=card_id,
-                        options=options_df.to_dict('records'),
-                        value=value,
-                        labelClassName='mr-3',
-                        inputClassName='mr-1'
-                    )
-                ]
-            ),
-            className='mb-4'
-        )
+    if qtype == 'choice':
+        options = params.get('options', None)
+        if options:
+            # Parse list of options
+            
+            default = params.get('default', options[0])
+
+            options_df = params.get('options_df', pd.DataFrame({'label': ['Option'], 'value': [1]}))
+            value = params.get('value', options_df.value.min())
+
+            card = dbc.Card(
+                dbc.CardBody(
+                    [
+                        html.H4(name, className='card-title'),
+                        html.P(question, className='card-text'),
+                        dbc.RadioItems(
+                            id=card_id,
+                            options=options_df.to_dict('records'),
+                            value=value,
+                            labelClassName='mr-3',
+                            inputClassName='mr-1'
+                        )
+                    ]
+                ),
+                className='mb-4'
+            )
     elif question_type == 'open':
         header = params.get('header', 'Header')
         subheader = params.get('subheader', 'Subheader')

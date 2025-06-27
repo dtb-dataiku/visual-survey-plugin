@@ -34,8 +34,7 @@ anonymous = webapp_config['anonymous']
 
 # SETUP
 # Set delimiter
-OPTIONS_DELIMITER = '|'
-OPTION_DELIMITER = '#'
+DELIMITER = '|'
 
 # Map question type to dash component element
 ELEMENT_MAP = {
@@ -57,7 +56,7 @@ for i, row in questions_df.iterrows():
         'type': row[type_col],
         'name': row[header_col],
         'question': row[subheader_col],
-        'options': row[options_col].split(OPTIONS_DELIMITER) if row[type_col] != 'open' else None,
+        'options': row[options_col].split(DELIMITER) if row[type_col] != 'open' else None,
         'default': row[default_col],
         'display': 'Item' if row[type_col] == 'rank' else None
     })
