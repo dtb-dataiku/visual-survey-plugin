@@ -263,12 +263,12 @@ def submit_survey(n_clicks, *responses):
     folder.upload_data(filename, csv)
         
     # Build confirmation message
-    cols = ['question_id', 'question_header', 'question_subheader']
+    cols = ['question_id', 'name', 'question']
     display_df = (
         response_df
-        .sort_values([*cols, 'question_value'])
+        .sort_values([*cols, 'value'])
         .groupby(cols, as_index=False)
-        .agg({'question_option': lambda o: o.str.cat(sep=', ')})
+        .agg({'response': lambda o: o.str.cat(sep=', ')})
         .drop(columns=['question_id'])
     )
     
@@ -278,11 +278,11 @@ def submit_survey(n_clicks, *responses):
     parts.append(html.Hr())
     
     for _, row in display_df.iterrows():
-        question_header = row['question_header']
-        question_subheader = row['question_subheader']
-        question_response = row['question_option']
+        name = row['name']
+        question = row['question']
+        question_response = row['response']
         
-        parts.append(html.H5(f"{question_header} - {question_subheader}"))
+        parts.append(html.H5(f"{name} - {question}"))
         parts.append(html.P(question_response))
     
     return dbc.Alert(parts, color='success', dismissable=True)
