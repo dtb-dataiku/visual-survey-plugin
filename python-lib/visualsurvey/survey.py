@@ -4,13 +4,6 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 
 
-# 'type'
-# 'name'
-# 'question'
-# 'options'
-# 'default'
-# 'display'
-
 # Create a dash component for ranking question
 def create_question_card(card_id, **params):
     # Set delimiter
