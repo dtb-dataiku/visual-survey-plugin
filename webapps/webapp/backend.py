@@ -172,7 +172,7 @@ def submit_survey(n_clicks, *responses):
     user = auth_info_browser['authIdentifier']
     if anonymous:
         if '@' in user:
-            user = '@'.join([f.bothify('#' * 16), email.split('@')[1]])
+            user = '@'.join([f.bothify('#' * 16), user.split('@')[1]])
         else:
             user = '@'.join([f.bothify('#' * 16), 'hidden.com'])
     
