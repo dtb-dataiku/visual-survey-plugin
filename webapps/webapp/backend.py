@@ -28,11 +28,8 @@ type_col = webapp_config['type_column']
 header_col = webapp_config['header_column']
 subheader_col = webapp_config['subheader_column']
 options_col = webapp_config['options_column']
-default_col = webapp_config['default_option_column']
-display_col = webapp_config['display_column']
 folder_name = webapp_config['folder_name']
 anonymous = webapp_config['anonymous']
-
 
 # SETUP
 # Set delimiter
@@ -46,32 +43,74 @@ ELEMENT_MAP = {
 }
 
 # Load questions
-questions_cols = [type_col, header_col, subheader_col, options_col, default_col, display_col]
+questions_cols = [type_col, header_col, subheader_col, options_col]
 questions_ds = dataiku.Dataset(dataset_name)
 questions_df = questions_ds.get_dataframe(columns=questions_cols)
 questions_df = questions_df.loc[questions_df[type_col] in ELEMENT_MAP.keys(), ]
 
 # Build list of question card parameters
 questions = []
-for i, row in questions_df.iterrows():    
+for i, row in questions_df.iterrows():
     questions.append({
         'type': row[type_col],
         'name': row[header_col],
         'question': row[subheader_col],
         'options': row[options_col].split(DELIMITER) if row[type_col] != 'open' else None,
-        'default': row[default_col],
-        'display': row[display_col] if row[type_col] == 'rank' else None
+        'display': 'Item' if row[type_col] == 'rank' else None
     })
-
-# Build question cards
-question_cards = []
-for q, question in enumerate(questions):
-    question_cards.append(create_question_card(f'question-card-{q}', **question))
 
 # Get folder responses
 folder = dataiku.Folder(folder_name)
 
 
+
+
+
+
+# Input data
+RANK_OPTIONS = [{'option': f'Option {i+1}'} for i in range(3)]
+rank_df = pd.DataFrame(RANK_OPTIONS)
+rank_df['up'] = '🔼'
+rank_df['down'] = '🔽'
+
+OPTIONS = [{'label': f'Label {i+1}', 'value': i + 1} for i in range(5)]
+options_df = pd.DataFrame(OPTIONS)
+
+
+# Build question cards
+questions = [
+    {
+        'question_type': 'ranking',
+        'header': 'Question 1',
+        'subheader': 'Rank these.',
+        'name': 'Option',
+        'options_df': rank_df
+    },
+    {
+        'question_type': 'choice',
+        'header': 'Question 2',
+        'subheader': 'Which one do you need?',
+        'options_df': options_df,
+        'value': 1
+    },
+    {
+        'question_type': 'choice',
+        'header': 'Question 3',
+        'subheader': 'Which one do you want?',
+        'options_df': options_df,
+        'value': 1
+    },
+    {
+        'question_type': 'open',
+        'header': 'Question 4',
+        'subheader': 'Do you have any thoughts?'
+    }
+]
+
+question_cards = []
+for q, question in enumerate(questions):
+    question_cards.append(create_question_card(f'question-card-{q}', **question))
+    
 # APP
 # Set stylesheet
 app.config.external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -108,7 +147,7 @@ app.layout = html.Div([
 
 # CALLBACKS
 # Handle ranking question
-def register_callbacks_for_rank_question(cid):
+def register_callbacks_for_ranking_question(cid):
     @app.callback(
         Output(cid, 'data'),
         Input(cid, 'active_cell'),
@@ -135,11 +174,11 @@ def register_callbacks_for_rank_question(cid):
     
 for q, question in enumerate(questions):
     if question['type'] == 'rank':
-        register_callbacks_for_rank_question(f'question-card-{q}')
+        register_callbacks_for_ranking_question(f'question-card-{q}')
 
 # Handle submit button
 states = [
-    State(f'question-card-{q}', ELEMENT_MAP[question['type']])
+    State(f'question-card-{q}', ELEMENT_MAP[question['question_type']])
     for q, question in enumerate(questions)
 ]
 
@@ -164,8 +203,8 @@ def submit_survey(n_clicks, *responses):
     response_data = []
     for r, response in enumerate(responses):
         question = questions[r]
-        if question['type'] == 'rank':
-            name = question['display'].lower()
+        if question['question_type'] == 'ranking':
+            name = question['name'].lower()
             df = pd.DataFrame({
                 'option': [item[name] for item in response],
                 'order': range(1, len(response) + 1)
