@@ -53,12 +53,11 @@ questions = []
 for i, row in questions_df.iterrows():
     questions.append({
         'type': row[type_col],
-        'header': row[header_col],
-        'subheader': row[subheader_col],
-        'name': 'Item' if row[type_col] == 'rank' else None,
-        'options': row[options_col].split(DELIMITER)
+        'name': row[header_col],
+        'question': row[subheader_col],
+        'options': row[options_col].split(DELIMITER) if row[type_col] != 'open' else None,
+        'display': 'Item' if row[type_col] == 'rank' else None
     })
-
 
 # Get folder responses
 folder = dataiku.Folder(folder_name)
