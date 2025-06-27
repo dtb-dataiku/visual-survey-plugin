@@ -17,6 +17,8 @@ def create_question_card(card_id, **params):
     card = None
     if qtype == 'choice':
         options = params.get('options', None)
+        default = params.get('default', None)
+        
         if options:
             # Parse list of options
             if all(list(map(lambda o: DELIMITER in o, options))):
@@ -25,11 +27,10 @@ def create_question_card(card_id, **params):
             else:
                 values = [i for i in range(1, len(options) + 1)]
             
-            # Get default option
-            default = params.get('default', None)
-            if default & (default in options):
-                default = values[options.index(default)]
-            else:
+            # Set default option to equivalent value
+            mapping = dict(zip(options, values))
+            default = mapping.get(default, default)
+            if default not in values:
                 default = values[0]
                 
             # Create dataframe of options
@@ -71,6 +72,7 @@ def create_question_card(card_id, **params):
     elif qtype == 'rank':
         options = params.get('options', None)
         display = params.get('display', 'Item')
+        
         if options:                
             # Create dataframe of options
             options_df = pd.DataFrame({display.lower(): options})
