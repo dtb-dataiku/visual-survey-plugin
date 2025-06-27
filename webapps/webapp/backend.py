@@ -150,7 +150,7 @@ app.layout = html.Div([
 
 # CALLBACKS
 # Handle ranking question
-def register_callbacks_for_ranking_question(cid):
+def register_callbacks_for_rank_question(cid):
     @app.callback(
         Output(cid, 'data'),
         Input(cid, 'active_cell'),
@@ -177,7 +177,7 @@ def register_callbacks_for_ranking_question(cid):
     
 for q, question in enumerate(questions):
     if question['type'] == 'rank':
-        register_callbacks_for_ranking_question(f'question-card-{q}')
+        register_callbacks_for_rank_question(f'question-card-{q}')
 
 # Handle submit button
 states = [
