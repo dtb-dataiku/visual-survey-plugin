@@ -178,7 +178,7 @@ for q, question in enumerate(questions):
 
 # Handle submit button
 states = [
-    State(f'question-card-{q}', ELEMENT_MAP[question['question_type']])
+    State(f'question-card-{q}', ELEMENT_MAP[question['type']])
     for q, question in enumerate(questions)
 ]
 
