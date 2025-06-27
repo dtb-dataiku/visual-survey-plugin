@@ -28,6 +28,8 @@ type_col = webapp_config['type_column']
 header_col = webapp_config['header_column']
 subheader_col = webapp_config['subheader_column']
 options_col = webapp_config['options_column']
+default_col = webapp_config['default_option_column']
+display_col = webapp_config['display_column']
 folder_name = webapp_config['folder_name']
 anonymous = webapp_config['anonymous']
 
@@ -43,7 +45,7 @@ ELEMENT_MAP = {
 }
 
 # Load questions
-questions_cols = [type_col, header_col, subheader_col, options_col]
+questions_cols = [type_col, header_col, subheader_col, options_col, default_col, display_col]
 questions_ds = dataiku.Dataset(dataset_name)
 questions_df = questions_ds.get_dataframe(columns=questions_cols)
 questions_df = questions_df.loc[questions_df[type_col] in ELEMENT_MAP.keys(), ]
@@ -203,8 +205,8 @@ def submit_survey(n_clicks, *responses):
     response_data = []
     for r, response in enumerate(responses):
         question = questions[r]
-        if question['question_type'] == 'ranking':
-            name = question['name'].lower()
+        if question['type'] == 'rank':
+            name = question['display'].lower()
             df = pd.DataFrame({
                 'option': [item[name] for item in response],
                 'order': range(1, len(response) + 1)
