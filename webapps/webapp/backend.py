@@ -28,12 +28,14 @@ type_col = webapp_config['type_column']
 header_col = webapp_config['header_column']
 subheader_col = webapp_config['subheader_column']
 options_col = webapp_config['options_column']
+default_col = webapp_config['default_option_column']
 folder_name = webapp_config['folder_name']
 anonymous = webapp_config['anonymous']
 
 # SETUP
 # Set delimiter
-DELIMITER = '|'
+OPTIONS_DELIMITER = '|'
+OPTION_DELIMITER = '#'
 
 # Map question type to dash component element
 ELEMENT_MAP = {
@@ -43,7 +45,7 @@ ELEMENT_MAP = {
 }
 
 # Load questions
-questions_cols = [type_col, header_col, subheader_col, options_col]
+questions_cols = [type_col, header_col, subheader_col, options_col, default_col]
 questions_ds = dataiku.Dataset(dataset_name)
 questions_df = questions_ds.get_dataframe(columns=questions_cols)
 questions_df = questions_df.loc[questions_df[type_col] in ELEMENT_MAP.keys(), ]
@@ -55,7 +57,8 @@ for i, row in questions_df.iterrows():
         'type': row[type_col],
         'name': row[header_col],
         'question': row[subheader_col],
-        'options': row[options_col].split(DELIMITER) if row[type_col] != 'open' else None,
+        'options': row[options_col].split(OPTIONS_DELIMITER) if row[type_col] != 'open' else None,
+        'default': row[default_col],
         'display': 'Item' if row[type_col] == 'rank' else None
     })
 
