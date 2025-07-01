@@ -66,12 +66,6 @@ for i, row in questions_df.iterrows():
         'display': row[display_col] if row[type_col] == 'rank' and row[display_col] else None
     })
 
-# Build question cards
-print("--> Build question cards")
-question_cards = []
-for q, question in enumerate(questions):
-    question_cards.append(create_question_card(f'question-card-{q}', **question))
-    
 # Get folder responses
 print("--> Get folder responses")
 folder = dataiku.Folder(folder_name)
@@ -81,38 +75,48 @@ f = Faker('en_US')
 
 
 # APP
+# Define function to serve app; give Dash a factory, not an object
+def serve_layout():
+    # Build question cards
+    question_cards = []
+    for q, question in enumerate(questions):
+        question_cards.append(create_question_card(f'question-card-{q}', **question))
+        
+    return html.Div([
+        dbc.Container(
+            [
+                # Header
+                dbc.Row(dbc.Col(html.Div(
+                    [
+                        html.H1(survey_header, className='text-center text-primary mb-4'),
+                        html.P(survey_subheader, className='text-center')
+                    ],
+                    className='py-4'
+                ))),
+                # Survey
+                dbc.Row(dbc.Col(question_cards)),
+                # Submit
+                dbc.Row(dbc.Col(html.Div(dbc.Button(
+                    'Submit Responses',
+                    id='submit-button',
+                    color='primary',
+                    size='lg',
+                    n_clicks=0
+                ), className='text-center'))),
+                # Output
+                dbc.Row(dbc.Col(html.Div(id='survey-output', className='mt-5')))
+            ],
+            fluid=True,
+            className='bg-light p-5'
+        )
+    ])
+    
+
 # Set stylesheet
 app.config.external_stylesheets = [dbc.themes.BOOTSTRAP]
 
 # Define layout
-app.layout = html.Div([
-    dbc.Container(
-        [
-            # Header
-            dbc.Row(dbc.Col(html.Div(
-                [
-                    html.H1(survey_header, className='text-center text-primary mb-4'),
-                    html.P(survey_subheader, className='text-center')
-                ],
-                className='py-4'
-            ))),
-            # Survey
-            dbc.Row(dbc.Col(question_cards)),
-            # Submit
-            dbc.Row(dbc.Col(html.Div(dbc.Button(
-                'Submit Responses',
-                id='submit-button',
-                color='primary',
-                size='lg',
-                n_clicks=0
-            ), className='text-center'))),
-            # Output
-            dbc.Row(dbc.Col(html.Div(id='survey-output', className='mt-5')))
-        ],
-        fluid=True,
-        className='bg-light p-5'
-    )
-])
+app.layout = serve_layout
 
 # CALLBACKS
 # Handle ranking question
