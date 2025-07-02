@@ -7,7 +7,7 @@
         "author": "darin.brown@dataiku.com",
         "icon": "fas fa-poll",
         "tags": [], //for example: ["Machine Learning", "NLP"]
-        "url": "",
+        "url": "https://github.com/dtb-dataiku/visual-survey-plugin",
         "licenseInfo": "Apache Software License",
         "supportLevel": "NOT_SUPPORTED"
     }
