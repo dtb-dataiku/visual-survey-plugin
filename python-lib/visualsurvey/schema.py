@@ -13,6 +13,7 @@ OPTIONS_DELIMITER = "|"
 VALUES_DELIMITER = "#"
 
 
+# CLASS DEFINITIONS
 class QuestionType(str, Enum):
     """Enumeration of supported survey question types."""
     
@@ -68,7 +69,9 @@ class SurveyQuestion:
             
         if self.qtype is QuestionType.TEXT and self.options:
             raise ValueError(f"Question '{self.id}' is text but options were provided.")
-            
+
+
+# HELPER FUNCTIONS
 def _split_options(raw: str, delimiter: str = OPTIONS_DELIMITER) -> List[str]:
     """Split the pipe‑delimited options column into a clean list."""
     return [option.strip() for option in raw.split(delimiter) if option.strip()]
@@ -100,11 +103,21 @@ def _to_bool(value: Any) -> bool:
     
     # Return false as a fallback
     return False
-        
 
-def parse_questions() -> List[SurveyQuestion]:
+
+# FUNCTIONS
+def parse_questions(rows: Sequence[Dict[str, Any]]) -> List[SurveyQuestion]:
     """
+    Convert a list of CSV/Dict rows into typed SurveyQuestion instances.
     
+    Attributes
+    ----------
+    rows: Sequence[Dict[str, Any]]
+        Typically what you'd get from ``dataset.iter_rows()`` in Dataiku.
+        
+    Returns
+    -------
+    List[SurveyQuestion]
     """
     
     questions: List[SurveyQuestion] = []
@@ -114,12 +127,14 @@ def parse_questions() -> List[SurveyQuestion]:
         default: Optional[str] = None if raw_default in ("", None) else str(raw_default)
         
         q = SurveyQuestion(
-            id=,
-            label=,
-            qtype=,
-            options=,
+            id=r["id"],
+            label=r["label"],
+            qtype=QuestionType.from_raw(r.["qtype"]),
+            options=_split_options(r.get("options", "")),
             default=default,
-            required=str(r.get("required", ))
+            required=_to_bool(r.get("required", False))
         )
+        q.validate()
+        questions.append(q)
     
     return questions
