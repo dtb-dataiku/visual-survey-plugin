@@ -10,6 +10,7 @@ from typing import List, Optional, Sequence, Dict, Any
 
 
 OPTIONS_DELIMITER = "|"
+VALUES_DELIMITER = '#'
 
 
 # CLASS DEFINITIONS
