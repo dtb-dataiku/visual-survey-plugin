@@ -70,11 +70,56 @@ class SurveyQuestion:
             raise ValueError(f"Question '{self.id}' is text but options were provided.")
             
 def _split_options(raw: str, delimiter: str = OPTIONS_DELIMITER) -> List[str]:
-    pass
+    """Split the pipe‑delimited options column into a clean list."""
+    return [option.strip() for option in raw.split(delimiter) if option.strip()]
+
+def _to_bool(value: Any) -> bool:
+    """Coerce various truthy / falsy representations into a proper boolean."""
+    
+    # Handle booleans
+    if isinstance(value, bool):
+        return value
+    
+    # Handle None values
+    if val is None:
+        return False
+    
+    # Handle numeric equivalents (0/1)
+    if isinstance(value, (int, float)):
+        return bool(value)
+    
+    # Handle strings like 'y', 'yes', 'n', or 'no'
+    value_str = str(value).strip().lower()
+    truthy = {"y", "yes", "t", "true", "1"}
+    falsey = {"n", "no", "f", "false", "0"}
+    
+    if value_str in truthy:
+        return True
+    if value_str in falsey:
+        return False
+    
+    # Return false as a fallback
+    return False
+        
 
 def parse_questions() -> List[SurveyQuestion]:
     """
     
     """
+    
+    questions: List[SurveyQuestion] = []
+        
+    for r in rows:
+        raw_default = r.get("default", None)
+        default: Optional[str] = None if raw_default in ("", None) else str(raw_default)
+        
+        q = SurveyQuestion(
+            id=,
+            label=,
+            qtype=,
+            options=,
+            default=default,
+            required=str(r.get("required", ))
+        )
     
     return questions
