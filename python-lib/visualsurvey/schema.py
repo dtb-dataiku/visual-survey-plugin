@@ -26,9 +26,9 @@ class QuestionType(str, Enum):
         """Parse raw CSV string into a QuestionType enum, raising if invalid."""
         try:
             return cls(raw.strip().lower())
-        except ValueError as exc:
+        except ValueError as e:
             valid = ", ".join(m.value from m in cls)
-            raise ValueError(f"Unknown question type '{raw}'. Expected one of: {valid}") from exc
+            raise ValueError(f"Unknown question type '{raw}'. Expected one of: {valid}") from e
             
 @dataclass(frozen=True, slots=True)
 class SurveyQuestion:
