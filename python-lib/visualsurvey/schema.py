@@ -52,5 +52,5 @@ class SurveyQuestion:
         if self.qtype is QuestionType.TEXT and self.options:
             raise ValueError(f"Question '{self.id}' is text but options were provided.")
             
-def _split_options(raw: str, delimiter: str = VALUES_DELIMITER) -> List[str]:
+def _split_options(raw: str, delimiter: str = OPTIONS_DELIMITER) -> List[str]:
     pass
