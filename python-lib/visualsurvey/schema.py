@@ -32,7 +32,24 @@ class QuestionType(str, Enum):
             
 @dataclass(frozen=True, slots=True)
 class SurveyQuestion:
-    """"""
+    """
+    A survey question
+    
+    Attributes
+    ----------
+    id: str
+        Unique identifer to be used as column name when saving responses.
+    label: str
+        Human-readable question text to display to the user.
+    qtype: QuestionType
+        Interaction widget type.
+    options: List[str], optional
+        Allowed choices for choice-based questions. Ignored for text questions.
+    default: str, optional
+        Pre-select option or default text shown in the input.
+    required: bool
+        Whether the question must be answered before form submission.
+    """
     
     id: str
     label: str
@@ -54,3 +71,10 @@ class SurveyQuestion:
             
 def _split_options(raw: str, delimiter: str = OPTIONS_DELIMITER) -> List[str]:
     pass
+
+def parse_questions() -> List[SurveyQuestion]:
+    """
+    
+    """
+    
+    return questions
