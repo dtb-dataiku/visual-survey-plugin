@@ -46,6 +46,8 @@ class SurveyQuestion:
         Interaction widget type.
     options: List[str], optional
         Allowed choices for choice-based questions. Ignored for text questions.
+    values: List[], optional
+        Derived from options.
     default: str, optional
         Pre-select option or default text shown in the input.
     required: bool
@@ -56,6 +58,7 @@ class SurveyQuestion:
     label: str
     qtype: QuestionType
     options: List[str] = field(default_factory=list)
+    values: List[] = field(default_factory=list)
     default: Optional[str] = None
     required: bool = False
         
