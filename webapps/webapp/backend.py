@@ -17,6 +17,7 @@ from flask import request
 
 from faker import Faker
 
+from visualsurvey.schema import OPTIONS_DELIMITER, VALUES_DELIMITER
 from visualsurvey.survey import create_question_card
 from visualsurvey.survey import OPTIONS_DELIMITER, VALUES_DELIMITER
 
