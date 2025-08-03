@@ -46,7 +46,7 @@ class SurveyQuestion:
         Interaction widget type.
     options: List[str], optional
         Allowed choices for choice-based questions. Ignored for text questions.
-    values: List[], optional
+    values: List[int], optional
         Derived from options.
     default: str, optional
         Pre-select option or default text shown in the input.
@@ -58,7 +58,7 @@ class SurveyQuestion:
     label: str
     qtype: QuestionType
     options: List[str] = field(default_factory=list)
-    values: List[] = field(default_factory=list)
+    values: List[int] = field(default_factory=list)
     default: Optional[str] = None
     required: bool = False
         
@@ -126,6 +126,13 @@ def parse_questions(rows: Sequence[Dict[str, Any]]) -> List[SurveyQuestion]:
     questions: List[SurveyQuestion] = []
         
     for r in rows:
+        options = _split_options(r.get("options", ""))
+        if all(list(map(lambda o: VALUES_DELIMITER in o, options))):
+            values = [o.split(VALUES_DELIMITER)[1] for o in options]
+            options = [o.split(VALUES_DELIMITER)[0] for o in options]
+        else:
+            values = [i for i in range(1, len(options) + 1)]
+        
         raw_default = r.get("default", None)
         default: Optional[str] = None if raw_default in ("", None) else str(raw_default)
         
@@ -133,7 +140,8 @@ def parse_questions(rows: Sequence[Dict[str, Any]]) -> List[SurveyQuestion]:
             id=r["id"],
             label=r["label"],
             qtype=QuestionType.from_raw(r.["qtype"]),
-            options=_split_options(r.get("options", "")),
+            options=options,
+            values=values,
             default=default,
             required=_to_bool(r.get("required", False))
         )
