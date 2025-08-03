@@ -1,12 +1,21 @@
-import dash
-from dash import html, dash_table
-import dash_bootstrap_components as dbc
 import pandas as pd
 
+import dash
+from dash import dcc, html
+import dash_bootstrap_components as dbc
 
-# Set delimiter
-OPTIONS_DELIMITER = '|'
-VALUES_DELIMITER = '#'
+from visualsurvey.schema import QuestionType, SurveyQuestion
+
+
+# FACTORY HELPERS
+
+
+
+
+
+
+
+
 
 
 # Create a dash component for ranking question
