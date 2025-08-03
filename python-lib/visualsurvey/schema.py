@@ -28,8 +28,13 @@ class QuestionType(str, Enum):
         try:
             return cls(raw.strip().lower())
         except ValueError as e:
-            valid = ", ".join(m.value from m in cls)
+            valid = ", ".join(m.value for m in cls)
             raise ValueError(f"Unknown question type '{raw}'. Expected one of: {valid}") from e
+            
+    @classmethod
+    def list_types(cls) -> List[str]:
+        """Return a list of supported question types."""
+        return [m.value for m in cls]
             
 @dataclass(frozen=True, slots=True)
 class SurveyQuestion:

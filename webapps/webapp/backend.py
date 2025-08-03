@@ -1,24 +1,53 @@
-from dataiku.customwebapp import *
-
 # Access the parameters that end-users filled in using webapp config
 # For example, for a parameter called "input_dataset"
 # input_dataset = get_webapp_config()["input_dataset"]
-
-import dataiku
-
-import pandas as pd
 import datetime
 
+import dataiku
+from dataiku.customwebapp import *
 import dash
 from dash import dcc, html, dash_table
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output, State, ALL
 import dash_bootstrap_components as dbc
 from flask import request
-
+import pandas as pd
 from faker import Faker
 
-from visualsurvey.survey import create_question_card
-from visualsurvey.survey import OPTIONS_DELIMITER, VALUES_DELIMITER
+from visualsurvey.schema import OPTIONS_DELIMITER, VALUES_DELIMITER
+from visualsurvey.survey import build_survey_layout
+
+
+# CONFIGURATION
+# Get plugin parameters
+print("--> Get parameters")
+webapp_config = get_webapp_config()
+
+survey_header = webapp_config['survey_header']
+survey_subheader = webapp_config['survey_subheader']
+question_ds_name = webapp_config['question_dataset']
+folder_name = webapp_config['folder_name']
+anonymous = webapp_config['anonymous']
+
+question_cols_map = {
+    webapp_config['type_column']: 'qtype',
+    webapp_config['name_column']: 'id',
+    webapp_config['question_column']: 'label',
+    webapp_config['options_column']: 'options',
+    webapp_config['default_option_column']: 'default',
+    webapp_config['required_column']: 'required'
+}
+
+# SETUP
+# Load questions
+question_cols = list(question_cols.keys())
+questions_df = dataiku.Dataset(question_ds_name).get_dataframe(columns=questions_cols)
+questions_df = 
+
+
+
+
+
+
 
 
 # PLUGIN
