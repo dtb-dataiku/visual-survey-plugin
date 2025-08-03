@@ -1,6 +1,3 @@
-# Access the parameters that end-users filled in using webapp config
-# For example, for a parameter called "input_dataset"
-# input_dataset = get_webapp_config()["input_dataset"]
 import datetime
 import json
 import uuid
@@ -58,6 +55,20 @@ def _normalize_rank_responses(rank_values: List[int], rank_ids: List[Dict]) -> D
         
     return compact
 
+# Define function to get user
+def _get_user(anonymous: bool) -> str:
+    """Gets Dataiku identifier or anonymous identifier."""
+    headers = dict(request.headers)
+    auth_info_browser = dataiku.api_client().get_auth_info_from_browser_headers(headers)
+    
+    user = auth_info_browser['authIdentifier']
+    if anonymous:
+        f = Faker('en_US')
+        if '@' in user:
+            user = '@'.join([f.bothify('#' * 16), user.split('@')[1]])
+        else:
+            user = '@'.join([f.bothify('#' * 16), 'anonymous.com'])
+            
 
 # SETUP
 # Load questions
@@ -106,15 +117,23 @@ app.layout = serve_layout
 )
 def submit_survey(_n_clicks: int, scalar_values: List, scalar_ids: List[Dict], rank_values: List[int], rank_ids: List[Dict]): # -> Tuple[str, str, bool, bool]
     """Collect answers, save to managed folder, and notify user."""
-    response = {
-        
+    response: Dict[str, str] = {
+        cid['qid']: json.dumps(val) if isinstance(val, list) else str(val or "") for val, cid in zip(scalar_values, scalar_ids)
     }
     
+    # Flatten rank responses
+    response.update(_normalize_rank_responses(rank_values, rank_ids))
+    
+    
+    
     
 
 
 
-
+    user_str = '_at_'.join(user.split("@")).replace(".", "_")
+    filename = "-".join(["response", user_str, now.strftime("%Y%m%d-%H%M%S")]) + ".csv"
+    csv = response_df.to_csv(index=False).encode("utf-8")
+    folder.upload_data(filename, csv)
 
 
 
