@@ -79,9 +79,6 @@ questions_df = questions_df.loc[questions_df.qtype.isin(QuestionType.list_types(
 
 questions = parse_questions(questions_df.to_dict('records'))
 
-# Get folder for responses
-folder = dataiku.Folder(folder_name)
-
 
 # APP
 # Define function to serve app; give Dash a factory, not an object
@@ -124,25 +121,29 @@ def submit_survey(_n_clicks: int, scalar_values: List, scalar_ids: List[Dict], r
     # Flatten rank responses
     response.update(_normalize_rank_responses(rank_values, rank_ids))
     
+    # Add metadata to responses
+    response['response_id'] = uuid.uuid4().hex
+    response['timestamp'] = datetime.datetime.utcnow().isoformat()
+    response['respondent'] = _get_user(anonymous)
     
-    
-    
-
-
-
-    user_str = '_at_'.join(user.split("@")).replace(".", "_")
-    filename = "-".join(["response", user_str, now.strftime("%Y%m%d-%H%M%S")]) + ".csv"
-    csv = response_df.to_csv(index=False).encode("utf-8")
-    folder.upload_data(filename, csv)
-
-
-
-
-
-
-
-
-
+    # Save as JSON to managed folder
+    try:
+        folder = dataiku.Folder(folder_name)
+        file_name = f"{response['response_id']}.json"
+        folder.upload_data(file_name, json.dumps(response).encode('utf-8'))
+        return (
+            "Thank you! Your response has been recorded.",
+            "success",
+            True,
+            True
+        )
+    except Exception as e:
+        return (
+            "Sorry, something went wrong while saving. Please try again.",
+            "danger",
+            True,
+            False
+        )
 
 
 
