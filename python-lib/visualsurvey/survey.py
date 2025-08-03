@@ -46,7 +46,7 @@ def _render_rank(q: SurveyQuestion) -> html.Div:
     rows = []
     for idx, option in enumerate(q.options, start=1):
         dropdown = dcc.Dropdown(
-            id={"role": "rank-select", "qid": q.id, "option": option},
+            id={"role": "rank-select", "qid": q.id, "opt": option},
             options=[{"label": str(i), "value": i} for i in range(1, len(q.options) + 1)],
             value=idx,
             clearable=False,

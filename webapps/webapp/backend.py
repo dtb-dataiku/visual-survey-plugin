@@ -2,6 +2,10 @@
 # For example, for a parameter called "input_dataset"
 # input_dataset = get_webapp_config()["input_dataset"]
 import datetime
+import json
+import uuid
+from pathlib import Path
+from typing import Dict, List, Tuple
 
 import dataiku
 from dataiku.customwebapp import *
@@ -13,7 +17,7 @@ from flask import request
 import pandas as pd
 from faker import Faker
 
-from visualsurvey.schema import OPTIONS_DELIMITER, VALUES_DELIMITER
+from visualsurvey.schema import OPTIONS_DELIMITER, QuestionType, parse_questions
 from visualsurvey.survey import build_survey_layout
 
 
@@ -37,11 +41,86 @@ question_cols_map = {
     webapp_config['required_column']: 'required'
 }
 
+
+# HELPER
+# Define function to flatten rank dropdown states into delimited strings
+def _normalize_rank_responses(rank_values: List[int], rank_ids: List[Dict]) -> Dict[str, str]:
+    """Convert per-option dropdown selections into a single string per question."""
+    by_question: Dict[str, Dict[str, int]] = {}
+    for value, cid in zip(rank_values, rank_ids):
+        by_question.setdefault(cid['qid'], {})[cid['opt']] = value
+        
+    # Order options by ascending rank (1 is first)
+    compact: Dict[str, str] = {}
+    for qid, mapping in by_question.items():
+        ordered_opts = [opt for opt, _ in sorted(mapping.items()), key=lambda r: r[1]]
+        compact[qid] = OPTIONS_DELIMITER.join(ordered_opts)
+        
+    return compact
+
+
 # SETUP
 # Load questions
 question_cols = list(question_cols.keys())
 questions_df = dataiku.Dataset(question_ds_name).get_dataframe(columns=questions_cols)
-questions_df = 
+questions_df = questions_df.rename(columns=question_cols_map)
+questions_df = questions_df.loc[questions_df.qtype.isin(QuestionType.list_types())]
+
+questions = parse_questions(questions_df.to_dict('records'))
+
+# Get folder for responses
+folder = dataiku.Folder(folder_name)
+
+
+# APP
+# Define function to serve app; give Dash a factory, not an object
+def serve_layout() -> html.Div:
+    """Factory for app.layout so each browser session starts fresh."""
+    alert = dbc.Alert(id="alert-submit", is_open=False, duration=4000, className="mt-2")
+    
+    return html.Div([
+        build_survey_layout(questions),
+        alert
+    ])
+
+# Set stylesheet
+app.config.external_stylesheets = [dbc.themes.BOOTSTRAP]
+
+# Define layout
+app.layout = serve_layout
+
+# Define submit callback
+@app.callback(
+    Output("alert-submit", "children"),
+    Output("alert-submit", "color"),
+    Output("alert-submit", "is_open"),
+    Output("btn-submit-survey", "disabled"),
+    Input("btn-submit-survey", "n_clicks"),
+    # All free‑text / radio / checklist answers
+    State({"role": "input", "qid": ALL}, "value"),
+    State({"role": "input", "qid": ALL}, "id"),
+    # All rank dropdowns (0..N per question)
+    State({"role": "rank-select", "qid": ALL, "opt": ALL}, "value"),
+    State({"role": "rank-select", "qid": ALL, "opt": ALL}, "id"),
+    prevent_initial_call=True
+)
+def submit_survey(_n_clicks: int, scalar_values: List, scalar_ids: List[Dict], rank_values: List[int], rank_ids: List[Dict]): # -> Tuple[str, str, bool, bool]
+    """Collect answers, save to managed folder, and notify user."""
+    response = {
+        
+    }
+    
+    
+
+
+
+
+
+
+
+
+
+
 
 
 
