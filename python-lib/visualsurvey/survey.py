@@ -1,10 +1,11 @@
-import pandas as pd
+from typing import List
 
 import dash
 from dash import dcc, html
 import dash_bootstrap_components as dbc
+import pandas as pd
 
-from visualsurvey.schema import QuestionType, SurveyQuestion
+from .schema import QuestionType, SurveyQuestion
 
 
 # FACTORY HELPERS
