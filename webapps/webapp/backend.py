@@ -90,6 +90,7 @@ def _get_user(anonymous: bool) -> str:
 
 # SETUP
 print("--> Load questions")
+print(list(question_cols_map.keys()))
 # Load questions
 question_cols = list(question_cols_map.keys())
 questions_df = dataiku.Dataset(question_ds_name).get_dataframe(columns=questions_cols)
