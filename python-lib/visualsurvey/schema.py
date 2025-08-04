@@ -83,7 +83,7 @@ def _to_bool(val: Any) -> bool:
     
     # Handle booleans
     if isinstance(val, bool):
-        return value
+        return val
     
     # Handle None values
     if val is None:
