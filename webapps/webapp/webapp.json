@@ -92,10 +92,10 @@
             "mandatory": true
         },
         {
-            "name": "display_column",
+            "name": "required_column",
             "type": "DATASET_COLUMN",
-            "label": "Display Name",
-            "description": "Select column containing display name for rank options",
+            "label": "Required",
+            "description": "Select column containing the required indicator",
             "datasetParamName": "question_dataset",
             "mandatory": true
         },
