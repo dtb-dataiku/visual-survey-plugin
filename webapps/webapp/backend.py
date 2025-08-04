@@ -90,12 +90,11 @@ def _get_user(anonymous: bool) -> str:
 
 # SETUP
 print("--> Load questions")
-print(list(question_cols_map.keys()))
 # Load questions
 question_cols = list(question_cols_map.keys())
-questions_df = dataiku.Dataset(question_ds_name).get_dataframe(columns=questions_cols)
+questions_df = dataiku.Dataset(question_ds_name).get_dataframe()
 questions_df = questions_df.rename(columns=question_cols_map)
-questions_df = questions_df.loc[questions_df.qtype.isin(QuestionType.list_types())]
+questions_df = questions_df.loc[questions_df.qtype.isin(QuestionType.list_types()), question_cols]
 
 questions = parse_questions(questions_df.to_dict('records'))
 
