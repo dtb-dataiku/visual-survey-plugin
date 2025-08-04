@@ -2,8 +2,6 @@
 
 """
 
-from __future__ annotations
-
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional, Sequence, Dict, Any
