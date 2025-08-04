@@ -14,7 +14,7 @@ from flask import request
 import pandas as pd
 from faker import Faker
 
-from visualsurvey.schema import OPTIONS_DELIMITER, QuestionType, parse_questions
+from visualsurvey.schema import QuestionType, parse_questions
 from visualsurvey.survey import build_survey_layout
 
 
@@ -40,22 +40,40 @@ question_cols_map = {
 
 
 # HELPER
-# Define function to flatten rank dropdown states into delimited strings
 def _normalize_rank_responses(rank_values: List[int], rank_ids: List[Dict]) -> Dict[str, str]:
     """Convert per-option dropdown selections into a single string per question."""
     by_question: Dict[str, Dict[str, int]] = {}
-    for value, cid in zip(rank_values, rank_ids):
-        by_question.setdefault(cid['qid'], {})[cid['opt']] = value
+    duplicates: List[str] = []
+    
+    for val, cid in zip(rank_values, rank_ids):
+        qid, opt = cid['qid'], cid['opt']
+        # Detect duplicate ranks for the same question
+        if qid in by_question and val in by_question[qid].values():
+            if qid not in duplicates:
+                duplicates.append(qid)
+        by_question.setdefault(qid, {})[opt] = val
         
     # Order options by ascending rank (1 is first)
     compact: Dict[str, str] = {}
     for qid, mapping in by_question.items():
         ordered_opts = [opt for opt, _ in sorted(mapping.items()), key=lambda r: r[1]]
-        compact[qid] = OPTIONS_DELIMITER.join(ordered_opts)
+        compact[qid] = ' | '.join(ordered_opts)
         
-    return compact
+    return compact, duplicates
 
-# Define function to get user
+def _find_missing_required(response: Dict[str, str]) -> List[str]:
+    """Return list of missing question IDs for required questions left unanswered."""
+    missing: List[str] = []
+    for q in questions:
+        if not q.required:
+            continue
+            
+        if response.get(q.id, "") in ("", "[]"):
+            missing.append(q.id)
+            
+    return missing
+
+
 def _get_user(anonymous: bool) -> str:
     """Gets Dataiku identifier or anonymous identifier."""
     headers = dict(request.headers)
@@ -68,7 +86,7 @@ def _get_user(anonymous: bool) -> str:
             user = '@'.join([f.bothify('#' * 16), user.split('@')[1]])
         else:
             user = '@'.join([f.bothify('#' * 16), 'anonymous.com'])
-            
+
 
 # SETUP
 # Load questions
