@@ -142,7 +142,7 @@ def parse_questions(rows: Sequence[Dict[str, Any]]) -> List[SurveyQuestion]:
         q = SurveyQuestion(
             id=r["id"],
             label=r["label"],
-            qtype=QuestionType.from_raw(r.["qtype"]),
+            qtype=QuestionType.from_raw(r["qtype"]),
             options=options,
             values=values,
             default=default,
