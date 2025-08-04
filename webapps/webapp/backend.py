@@ -153,7 +153,7 @@ def submit_survey(_n_clicks: int, scalar_values: List, scalar_ids: List[Dict], r
         if dup_rank_qids:
             problems.append(f"Duplicate ranks detected in: {', '.join(dup_rank_qids)}")
         
-        message = " ❗ " + "; ".join(problems)
+        message = "❗ " + "; ".join(problems)
         return message, "warning", True, False
     
     # Add metadata to responses
@@ -166,19 +166,11 @@ def submit_survey(_n_clicks: int, scalar_values: List, scalar_ids: List[Dict], r
         folder = dataiku.Folder(folder_name)
         file_name = f"{response['response_id']}.json"
         folder.upload_data(file_name, json.dumps(response).encode('utf-8'))
-        return (
-            "Thank you! Your response has been recorded.",
-            "success",
-            True,
-            True
-        )
+        message = "✅ Thank you! Your response has been recorded."
+        return message, "success", True, True
     except Exception as e:
-        return (
-            "Sorry, something went wrong while saving. Please try again.",
-            "danger",
-            True,
-            False
-        )
+        message = "🚫 Sorry, something went wrong while saving. Please try again."
+        return message, "danger", True, False
 
 
 
