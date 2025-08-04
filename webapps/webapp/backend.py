@@ -20,7 +20,7 @@ from visualsurvey.survey import build_survey_layout
 
 # CONFIGURATION
 # Get plugin parameters
-print("--> Get parameters")
+print("--> Get plugin parameters")
 webapp_config = get_webapp_config()
 
 survey_header = webapp_config['survey_header']
@@ -89,6 +89,7 @@ def _get_user(anonymous: bool) -> str:
 
 
 # SETUP
+print("--> Load questions")
 # Load questions
 question_cols = list(question_cols_map.keys())
 questions_df = dataiku.Dataset(question_ds_name).get_dataframe(columns=questions_cols)
