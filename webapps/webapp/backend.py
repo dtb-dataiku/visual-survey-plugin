@@ -132,12 +132,18 @@ app.layout = serve_layout
 )
 def submit_survey(_n_clicks: int, scalar_values: List, scalar_ids: List[Dict], rank_values: List[int], rank_ids: List[Dict]): # -> Tuple[str, str, bool, bool]
     """Collect answers, save to managed folder, and notify user."""
+    
+    # Collect responses
     response: Dict[str, str] = {
         cid['qid']: json.dumps(val) if isinstance(val, list) else str(val or "") for val, cid in zip(scalar_values, scalar_ids)
     }
     
-    # Flatten rank responses
-    response.update(_normalize_rank_responses(rank_values, rank_ids))
+    # Flatten rank responses and find any duplicated ranks
+    compact_ranks, dup_rank_qids = _normalise_rank_answers(rank_values, rank_ids)
+    response.update(compact_ranks)
+    
+    # Find any missing response
+    missing_qids = _find_missing_required(response)
     
     # Add metadata to responses
     response['response_id'] = uuid.uuid4().hex
