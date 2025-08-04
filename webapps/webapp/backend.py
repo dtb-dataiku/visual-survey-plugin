@@ -38,7 +38,6 @@ question_cols_map = {
     webapp_config['required_column']: 'required'
 }
 
-
 # HELPER
 def _normalize_rank_responses(rank_values: List[int], rank_ids: List[Dict]) -> Dict[str, str]:
     """Convert per-option dropdown selections into a single string per question."""
