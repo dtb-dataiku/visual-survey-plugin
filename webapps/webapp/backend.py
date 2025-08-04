@@ -145,6 +145,17 @@ def submit_survey(_n_clicks: int, scalar_values: List, scalar_ids: List[Dict], r
     # Find any missing response
     missing_qids = _find_missing_required(response)
     
+    # Validate responses
+    if missing_qids or dup_rank_qids:
+        problems: List[str] = []
+        if missing_qids:
+            problems.append(f"Unanswered required question(s): {', '.join(missing_qids)}")
+        if dup_rank_qids:
+            problems.append(f"Duplicate ranks detected in: {', '.join(dup_rank_qids)}")
+        
+        message = " ❗ " + "; ".join(problems)
+        return message, "warning", True, False
+    
     # Add metadata to responses
     response['response_id'] = uuid.uuid4().hex
     response['timestamp'] = datetime.datetime.utcnow().isoformat()
