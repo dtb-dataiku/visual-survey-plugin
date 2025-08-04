@@ -1,7 +1,3 @@
-"""
-
-"""
-
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional, Sequence, Dict, Any
@@ -34,7 +30,7 @@ class QuestionType(str, Enum):
         """Return a list of supported question types."""
         return [m.value for m in cls]
             
-@dataclass(frozen=True, slots=True)
+@dataclass
 class SurveyQuestion:
     """
     A survey question
@@ -72,21 +68,21 @@ class SurveyQuestion:
                 raise ValueError(f"Question '{self.id}' is {self.qtype} but has no options specified.")
             if self.default and self.default not in self.options:
                 raise ValueError(f"Default '{self.default}' not present in options for question '{self.id}'.")
-            
-        if self.qtype is QuestionType.TEXT and self.options:
+        
+        if self.qtype == QuestionType.TEXT and self.options:
             raise ValueError(f"Question '{self.id}' is text but options were provided.")
 
 
 # HELPER FUNCTIONS
 def _split_options(raw: str, delimiter: str = OPTIONS_DELIMITER) -> List[str]:
     """Split the pipe‑delimited options column into a clean list."""
-    return [option.strip() for option in raw.split(delimiter) if option.strip()]
+    return [opt.strip() for opt in raw.split(delimiter) if opt.strip()]
 
-def _to_bool(value: Any) -> bool:
+def _to_bool(val: Any) -> bool:
     """Coerce various truthy / falsy representations into a proper boolean."""
     
     # Handle booleans
-    if isinstance(value, bool):
+    if isinstance(val, bool):
         return value
     
     # Handle None values
@@ -94,17 +90,17 @@ def _to_bool(value: Any) -> bool:
         return False
     
     # Handle numeric equivalents (0/1)
-    if isinstance(value, (int, float)):
-        return bool(value)
+    if isinstance(val, (int, float)):
+        return bool(val)
     
     # Handle strings like 'y', 'yes', 'n', or 'no'
-    value_str = str(value).strip().lower()
+    val_str = str(val).strip().lower()
     truthy = {"y", "yes", "t", "true", "1"}
     falsey = {"n", "no", "f", "false", "0"}
     
-    if value_str in truthy:
+    if val_str in truthy:
         return True
-    if value_str in falsey:
+    if val_str in falsey:
         return False
     
     # Return false as a fallback
@@ -131,10 +127,10 @@ def parse_questions(rows: Sequence[Dict[str, Any]]) -> List[SurveyQuestion]:
     for r in rows:
         options = _split_options(r.get("options", ""))
         if all(list(map(lambda o: VALUES_DELIMITER in o, options))):
-            values = [o.split(VALUES_DELIMITER)[1] for o in options]
+            values = [int(o.split(VALUES_DELIMITER)[1]) for o in options]
             options = [o.split(VALUES_DELIMITER)[0] for o in options]
         else:
-            values = [i for i in range(1, len(options) + 1)]
+            values = list(range(1, len(options) + 1))
         
         raw_default = r.get("default", None)
         default: Optional[str] = None if raw_default in ("", None) else str(raw_default)
