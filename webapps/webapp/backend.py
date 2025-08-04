@@ -99,6 +99,7 @@ questions_df = dataiku.Dataset(question_ds_name).get_dataframe()
 questions_df = questions_df.rename(columns=question_cols_map)
 print('--> Renamed columns')
 print(f'--> Question types: {questions_df.qtype.tolist()}')
+print(f'--> Allowed types: {allowed_qtypes}')
 questions_df = questions_df.loc[questions_df.qtype.isin(allowed_qtypes), question_cols]
 print('--> Filtered dataframe')
 
