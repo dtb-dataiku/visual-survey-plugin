@@ -56,7 +56,7 @@ def _normalize_rank_responses(rank_values: List[int], rank_ids: List[Dict]) -> D
     # Order options by ascending rank (1 is first)
     compact: Dict[str, str] = {}
     for qid, mapping in by_question.items():
-        ordered_opts = [opt for opt, _ in sorted(mapping.items()), key=lambda r: r[1]]
+        ordered_opts = [opt for opt, _ in sorted(mapping.items(), key=lambda r: r[1])]
         compact[qid] = ' | '.join(ordered_opts)
         
     return compact, duplicates
