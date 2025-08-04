@@ -69,8 +69,8 @@ class SurveyQuestion:
             if self.default and self.default not in self.options:
                 raise ValueError(f"Default '{self.default}' not present in options for question '{self.id}'.")
         
-        if self.qtype == QuestionType.TEXT and self.options:
-            raise ValueError(f"Question '{self.id}' is text but options were provided.")
+#         if self.qtype == QuestionType.TEXT and self.options:
+#             raise ValueError(f"Question '{self.id}' is text but options were provided.")
 
 
 # HELPER FUNCTIONS
