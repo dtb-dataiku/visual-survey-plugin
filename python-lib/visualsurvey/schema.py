@@ -15,7 +15,6 @@ def _render_text_input(q: SurveyQuestion) -> html.Div:
         id={"role": "input", "qid": q.id},
         placeholder="Your response...",
         value=q.default,
-        required=r.required,
         debounce=True,
         className="w-100"
     )])
@@ -27,7 +26,6 @@ def _render_single_choice(q: SurveyQuestion) -> html.Div:
         id={"role": "input", "qid": q.id},
         options=options_df.to_dict("records"),
         value=q.default,
-        required=q.required,
         className="ps-2 d-block"
     )])
 
@@ -37,7 +35,6 @@ def _render_multi_choice(q: SurveyQuestion) -> html.Div:
     return html.Div([dbc.Checklist(
         id={"role": "input", "qid": q.id},
         options=options_df.to_dict("records"),
-        required=q.required,
         className="ps-2 d-block"
     )])
 
