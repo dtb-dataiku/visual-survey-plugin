@@ -76,7 +76,7 @@ def create_question_card(q: SurveyQuestion) -> dbc.Card:
     return dbc.Card(
         [
             dbc.CardHeader(html.H5(q.label, className="mb-0")),
-            dbc.CardBody(body)
+            dbc.CardBody(card_body)
         ],
         className="mb-4 shadow-sm"
     )
