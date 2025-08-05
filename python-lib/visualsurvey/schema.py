@@ -1,150 +1,103 @@
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import List, Optional, Sequence, Dict, Any
+from typing import List
+
+import dash
+import dash_bootstrap_components as dbc
+import pandas as pd
+
+from dash import dcc, html
+
+from .survey import QuestionType, SurveyQuestion
 
 
-OPTIONS_DELIMITER = "|"
-VALUES_DELIMITER = '#'
+# FACTORY HELPERS
+def _render_text_input(q: SurveyQuestion) -> html.Div:
+    return html.Div([dbc.Textarea(
+        id={"role": "input", "qid": q.id},
+        placeholder="Your response...",
+        value=q.default,
+        required=r.required,
+        debounce=True,
+        className="w-100"
+    )])
 
+def _render_single_choice(q: SurveyQuestion) -> html.Div:
+    options_df = pd.DataFrame({"label": q.options, "value": q.options})
+    
+    return html.Div([dbc.RadioItems(
+        id={"role": "input", "qid": q.id},
+        options=options_df.to_dict("records"),
+        value=q.default,
+        required=q.required,
+        className="ps-2 d-block"
+    )])
 
-# CLASS DEFINITIONS
-class QuestionType(str, Enum):
-    """Enumeration of supported survey question types."""
+def _render_multi_choice(q: SurveyQuestion) -> html.Div:
+    options_df = pd.DataFrame({"label": q.options, "value": q.options})
     
-    TEXT = "text"
-    SINGLE_CHOICE = "single_choice"
-    MULTI_CHOICE = "multi_choice"
-    RANK = "rank"
-    
-    @classmethod
-    def from_raw(cls, raw: str) -> "QuestionType":
-        """Parse raw CSV string into a QuestionType enum, raising if invalid."""
-        try:
-            return cls(raw.strip().lower())
-        except ValueError as e:
-            valid = ", ".join(m.value for m in cls)
-            raise ValueError(f"Unknown question type '{raw}'. Expected one of: {valid}") from e
-            
-    @classmethod
-    def list_types(cls) -> List[str]:
-        """Return a list of supported question types."""
-        return [m.value for m in cls]
-            
-@dataclass
-class SurveyQuestion:
-    """
-    A survey question
-    
-    Attributes
-    ----------
-    id: str
-        Unique identifer to be used as column name when saving responses.
-    label: str
-        Human-readable question text to display to the user.
-    qtype: QuestionType
-        Interaction widget type.
-    options: List[str], optional
-        Allowed choices for choice-based questions. Ignored for text questions.
-    values: List[int], optional
-        Derived from options.
-    default: str, optional
-        Pre-select option or default text shown in the input.
-    required: bool
-        Whether the question must be answered before form submission.
-    """
-    
-    id: str
-    label: str
-    qtype: QuestionType
-    options: List[str] = field(default_factory=list)
-    values: List[int] = field(default_factory=list)
-    default: Optional[str] = None
-    required: bool = False
-        
-    def validate(self) -> None:
-        """"""
-        if self.qtype in (QuestionType.SINGLE_CHOICE, QuestionType.MULTI_CHOICE, QuestionType.RANK):
-            if not self.options:
-                raise ValueError(f"Question '{self.id}' is {self.qtype} but has no options specified.")
-            if self.default and self.default not in self.options:
-                raise ValueError(f"Default '{self.default}' not present in options for question '{self.id}'.")
-        
-#         if self.qtype == QuestionType.TEXT and self.options:
-#             raise ValueError(f"Question '{self.id}' is text but options were provided.")
+    return html.Div([dbc.Checklist(
+        id={"role": "input", "qid": q.id},
+        options=options_df.to_dict("records"),
+        required=q.required,
+        className="ps-2 d-block"
+    )])
 
-
-# HELPER FUNCTIONS
-def _split_options(raw: str, delimiter: str = OPTIONS_DELIMITER) -> List[str]:
-    """Split the pipe‑delimited options column into a clean list."""
-    return [opt.strip() for opt in raw.split(delimiter) if opt.strip()]
-
-def _to_bool(val: Any) -> bool:
-    """Coerce various truthy / falsy representations into a proper boolean."""
-    
-    # Handle booleans
-    if isinstance(val, bool):
-        return val
-    
-    # Handle None values
-    if val is None:
-        return False
-    
-    # Handle numeric equivalents (0/1)
-    if isinstance(val, (int, float)):
-        return bool(val)
-    
-    # Handle strings like 'y', 'yes', 'n', or 'no'
-    val_str = str(val).strip().lower()
-    truthy = {"y", "yes", "t", "true", "1"}
-    falsey = {"n", "no", "f", "false", "0"}
-    
-    if val_str in truthy:
-        return True
-    if val_str in falsey:
-        return False
-    
-    # Return false as a fallback
-    return False
-
-
-# FUNCTIONS
-def parse_questions(rows: Sequence[Dict[str, Any]]) -> List[SurveyQuestion]:
-    """
-    Convert a list of CSV/Dict rows into typed SurveyQuestion instances.
-    
-    Attributes
-    ----------
-    rows: Sequence[Dict[str, Any]]
-        Typically what you'd get from ``dataset.iter_rows()`` in Dataiku.
-        
-    Returns
-    -------
-    List[SurveyQuestion]
-    """
-    
-    questions: List[SurveyQuestion] = []
-        
-    for r in rows:
-        options = _split_options(r.get("options", ""))
-        if all(list(map(lambda o: VALUES_DELIMITER in o, options))):
-            values = [int(o.split(VALUES_DELIMITER)[1]) for o in options]
-            options = [o.split(VALUES_DELIMITER)[0] for o in options]
-        else:
-            values = list(range(1, len(options) + 1))
-        
-        raw_default = r.get("default", None)
-        default: Optional[str] = None if raw_default in ("", None) else str(raw_default)
-        
-        q = SurveyQuestion(
-            id=r["id"],
-            label=r["label"],
-            qtype=QuestionType.from_raw(r["qtype"]),
-            options=options,
-            values=values,
-            default=default,
-            required=_to_bool(r.get("required", False))
+# VERY simple ranking: user selects a unique rank for each option via a dropdown.
+# More sophisticated drag-and-drop would require dash-sortable, left as future work.
+def _render_rank(q: SurveyQuestion) -> html.Div:
+    rows = []
+    for idx, option in enumerate(q.options, start=1):
+        dropdown = dcc.Dropdown(
+            id={"role": "rank-select", "qid": q.id, "opt": option},
+            options=[{"label": str(i), "value": i} for i in range(1, len(q.options) + 1)],
+            value=idx,
+            clearable=False,
+            style={"width": "4rem"}
         )
-        q.validate()
-        questions.append(q)
+        rows.append(
+            html.Div(
+                [html.Span(option, className="flex-grow-1"), dropdown],
+                className="d-flex align-items-center mb-2"
+            )
+        )
+        
+    hint_text = "Assign each item a unique rank (1 = highest). Duplicate ranks will be flagged."
+    hint = html.Small(hint_text, className="text-secondary fst-italic")
+
+# Map question type to renderer
+_RENDERERS = {
+    QuestionType.TEXT: _render_text_input,
+    QuestionType.SINGLE_CHOICE: _render_single_choice,
+    QuestionType.MULTI_CHOICE: _render_multi_choice,
+    QuestionType.RANK: _render_rank
+}
+
+def create_question_card(q: SurveyQuestion) -> dbc.Card:
+    """Return a Bootstrap card that encapsulates the question and its options."""
+
+    card_body = _RENDERERS[q.qtype](q)
     
-    return questions
+    return dbc.Card(
+        [
+            dbc.CardHeader(html.H5(q.label, className="mb-0")),
+            dbc.CardBody(body)
+        ],
+        className="mb-4 shadow-sm"
+    )
+
+def build_survey_layout(questions: List[SurveyQuestion]) -> html.Div:
+    """Wrap all question cards in container."""
+    
+    cards = [create_question_card(q) for q in questions]
+    submit_button = dbc.Button(
+        "Submit",
+        id="btn-submit-survey",
+        color="primary",
+        className="mt-3",
+        n_clicks=0
+    )
+    
+    return html.Div(
+        cards + [submit_button],
+        className="mx-auto my-4",
+        style={"maxWidth": "850px"}
+    )
