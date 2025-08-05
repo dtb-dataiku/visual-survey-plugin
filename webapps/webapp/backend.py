@@ -10,6 +10,7 @@ import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
 
+from dataiku.customwebapp import *
 from dash import dcc, html, dash_table
 from dash.dependencies import Input, Output, State, ALL
 from flask import request
