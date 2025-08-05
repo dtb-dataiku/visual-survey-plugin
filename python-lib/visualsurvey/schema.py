@@ -42,9 +42,9 @@ def _render_multi_choice(q: SurveyQuestion) -> html.Div:
 # More sophisticated drag-and-drop would require dash-sortable, left as future work.
 def _render_rank(q: SurveyQuestion) -> html.Div:
     rows = []
-    for idx, option in enumerate(q.options, start=1):
+    for idx, opt in enumerate(q.options, start=1):
         dropdown = dcc.Dropdown(
-            id={"role": "rank-select", "qid": q.id, "opt": option},
+            id={"role": "rank-select", "qid": q.id, "opt": opt},
             options=[{"label": str(i), "value": i} for i in range(1, len(q.options) + 1)],
             value=idx,
             clearable=False,
@@ -52,13 +52,12 @@ def _render_rank(q: SurveyQuestion) -> html.Div:
         )
         rows.append(
             html.Div(
-                [html.Span(option, className="flex-grow-1"), dropdown],
+                [html.Span(opt, className="flex-grow-1"), dropdown],
                 className="d-flex align-items-center mb-2"
             )
         )
-        
-    hint_text = "Assign each item a unique rank (1 = highest). Duplicate ranks will be flagged."
-    hint = html.Small(hint_text, className="text-secondary fst-italic")
+
+    return html.Div(rows)
 
 # Map question type to renderer
 _RENDERERS = {
@@ -72,10 +71,17 @@ def create_question_card(q: SurveyQuestion) -> dbc.Card:
     """Return a Bootstrap card that encapsulates the question and its options."""
 
     card_body = _RENDERERS[q.question_type](q)
+
+    required_html = html.Small([html.Sup("*"), "Required"], className="text-danger fst-italic") if q.required else ""
+
+    hint_html = ""
+    if q.question_type == QuestionType.RANK:
+        hint_text = "Assign each item a unique rank (1 = highest). Duplicate ranks will be flagged."
+        hint_html = html.Small(hint_text, className="text-secondary fst-italic")
     
     return dbc.Card(
         [
-            dbc.CardHeader(html.H5(q.label, className="mb-0")),
+            dbc.CardHeader([html.H5(q.label, className="mb-0"), required_html, hint_html]),
             dbc.CardBody(card_body)
         ],
         className="mb-4 shadow-sm"
@@ -83,8 +89,9 @@ def create_question_card(q: SurveyQuestion) -> dbc.Card:
 
 def build_survey_layout(questions: List[SurveyQuestion]) -> html.Div:
     """Wrap all question cards in container."""
-    
+
     cards = [create_question_card(q) for q in questions]
+    alert = dbc.Alert(id="alert-submit", is_open=False, duration=8000, className="mt-2")
     submit_button = dbc.Button(
         "Submit",
         id="btn-submit-survey",
@@ -94,7 +101,7 @@ def build_survey_layout(questions: List[SurveyQuestion]) -> html.Div:
     )
     
     return html.Div(
-        cards + [submit_button],
+        cards + [alert, submit_button],
         className="mx-auto my-4",
         style={"maxWidth": "850px"}
     )
