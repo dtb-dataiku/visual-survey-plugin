@@ -20,41 +20,23 @@ from visualsurvey.survey import QuestionType, parse_questions
 
 # CONFIGURATION
 # Get plugin parameters
-SURVEY_HEADER = 'Test Survey'
-SURVEY_SUBHEADER = 'Answer some questions'
-QUESTION_DATASET_NAME = 'questions'
-RESPONSE_FOLDER_NAME = 'responses'
-ANONYMOUS = False
-
-QUESTION_COLS_MAP = {
-    'type': 'question_type',
-    'short_name': 'id',
-    'question': 'label',
-    'options': 'options',
-    'default': 'default',
-    'required': 'required'
-}
-
-
-# CONFIGURATION
-# Get plugin parameters
-print("--> Get plugin parameters")
 webapp_config = get_webapp_config()
 
-survey_header = webapp_config['survey_header']
-survey_subheader = webapp_config['survey_subheader']
-question_ds_name = webapp_config['question_dataset']
-folder_name = webapp_config['folder_name']
-anonymous = webapp_config['anonymous']
+SURVEY_HEADER = webapp_config['survey_header']
+SURVEY_SUBHEADER = webapp_config['survey_subheader']
+QUESTION_DATASET_NAME = webapp_config['question_dataset']
+RESPONSE_FOLDER_NAME = webapp_config['folder_name']
+ANONYMOUS = webapp_config['anonymous']
 
-question_cols_map = {
-    webapp_config['type_column']: 'qtype',
+QUESTION_COLS_MAP = {
+    webapp_config['type_column']: 'question_type',
     webapp_config['name_column']: 'id',
     webapp_config['question_column']: 'label',
     webapp_config['options_column']: 'options',
     webapp_config['default_option_column']: 'default',
     webapp_config['required_column']: 'required'
 }
+
 
 # HELPER FUNCTIONS
 def load_questions_dataset(dataset_name: str, column_map: Dict[str, str] = QUESTION_COLS_MAP) -> pd.DataFrame:
