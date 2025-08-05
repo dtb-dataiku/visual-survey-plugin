@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "meta": {
         "label": "Visual survey",
-        "description": "Create a survey webapp",
+        "description": "Create a survey webapp<br>new line",
         "author": "darin.brown@dataiku.com",
         "icon": "fas fa-poll",
         "tags": [], //for example: ["Machine Learning", "NLP"]
