@@ -74,7 +74,7 @@ _RENDERERS = {
 def create_question_card(q: SurveyQuestion) -> dbc.Card:
     """Return a Bootstrap card that encapsulates the question and its options."""
 
-    card_body = _RENDERERS[q.qtype](q)
+    card_body = _RENDERERS[q.question_type](q)
     
     return dbc.Card(
         [
