@@ -1,0 +1,6 @@
+type,short_name,question,options,default,required
+single_choice,Question 1 - Single-Choice,Pick one.,Yay|Nay,,true
+single_choice,Question 2 - Single-Choice,Which one?,This|That,This,
+multi_choice,Question 3 - Multi-Choice,Pick some.,Thing 1|Thing 2|Thing 3|Thing 4,,
+rank,Question 4 - Rank,Rank these.,Circle|Square|Triangle,,
+text,Question 5 - Text,Write something.,,,
