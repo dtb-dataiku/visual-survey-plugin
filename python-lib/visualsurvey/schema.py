@@ -75,6 +75,10 @@ def create_question_card(q: SurveyQuestion) -> dbc.Card:
     required_html = html.Small([html.Sup("*"), "Required"], className="text-danger fst-italic") if q.required else ""
 
     hint_html = ""
+    if q.question_type == QuestionType.MULTI_CHOICE:
+        hint_text = "Select all that apply."
+        hint_html = html.Small(hint_text, className="text-secondary fst-italic")
+        
     if q.question_type == QuestionType.RANK:
         hint_text = "Assign each item a unique rank (1 = highest). Duplicate ranks will be flagged."
         hint_html = html.Small(hint_text, className="text-secondary fst-italic")
