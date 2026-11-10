@@ -1,5 +1,5 @@
 {
-  "acceptedPythonInterpreters": ["PYTHON313"],
+  "acceptedPythonInterpreters": ["PYTHON311"],
   "corePackagesSet": "AUTO",
   "forceConda": false,
   "installCorePackages": true,
